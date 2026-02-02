@@ -83,11 +83,15 @@
         }
 
         .section {
+            padding: 8px 6px;
+            margin-bottom: 34px;
+        }
+
+        .panel {
             background-color: var(--white);
-            border-radius: 28px;
-            padding: 40px 44px;
-            margin-bottom: 28px;
-            box-shadow: 0 12px 30px rgba(17, 17, 17, 0.04);
+            border-radius: 26px;
+            padding: 34px 38px;
+            box-shadow: 0 8px 20px rgba(17, 17, 17, 0.03);
         }
 
         .section-title {
@@ -104,7 +108,7 @@
 
         .headline {
             font-family: 'esamanruMedium', sans-serif;
-            font-size: 32px;
+            font-size: 30px;
             margin-bottom: 14px;
         }
 
@@ -129,16 +133,16 @@
         .pattern-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-            margin-top: 20px;
+            gap: 16px;
+            margin-top: 18px;
         }
 
         .pattern-card {
-            background: #f2f3f6;
-            border-radius: 24px;
-            padding: 26px;
+            background: #f3f4f6;
+            border-radius: 22px;
+            padding: 24px;
             text-align: center;
-            min-height: 120px;
+            min-height: 118px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -163,7 +167,7 @@
         .cta-chip {
             margin-top: 18px;
             width: 100%;
-            background-color: var(--light-gray);
+            background-color: #9d9d9d;
             color: var(--white);
             border-radius: 18px;
             padding: 10px 16px;
@@ -181,8 +185,8 @@
             display: grid;
             grid-template-columns: 1fr auto;
             gap: 24px;
-            padding: 24px 0;
-            border-bottom: 1px solid #eceef2;
+            padding: 22px 0;
+            border-bottom: 1px solid #eef0f4;
         }
 
         .ranking-item:last-child {
@@ -215,12 +219,12 @@
         }
 
         .metric-chip {
-            background-color: #f2f3f6;
+            background-color: #f4f5f7;
             color: var(--gray);
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 8px 14px;
             font-size: 12px;
-            min-width: 80px;
+            min-width: 86px;
             text-align: center;
         }
 
@@ -248,9 +252,9 @@
         }
 
         .map-placeholder {
-            width: 140px;
-            height: 90px;
-            border-radius: 14px;
+            width: 150px;
+            height: 94px;
+            border-radius: 16px;
             background: linear-gradient(135deg, #eceff4 0%, #dfe3eb 100%);
             display: flex;
             align-items: center;
@@ -260,9 +264,6 @@
         }
 
         .secondary-section {
-            background-color: var(--white);
-            border-radius: 28px;
-            padding: 34px 44px;
             margin-bottom: 24px;
         }
 
@@ -294,9 +295,8 @@
                 padding: 40px 20px 70px;
             }
 
-            .section,
-            .secondary-section {
-                padding: 32px 24px;
+            .panel {
+                padding: 28px 22px;
             }
 
             .pattern-grid {
@@ -358,7 +358,7 @@
             <div class="cta-chip">더 많은 기준을 보고싶다면?</div>
         </section>
 
-        <section class="section">
+        <section class="section panel">
             <div class="ranking-title">서울에서 추천하는 지역 TOP3</div>
 
             <div class="ranking-item">
@@ -407,7 +407,7 @@
             </div>
         </section>
 
-        <section class="secondary-section">
+        <section class="secondary-section panel">
             <div class="secondary-header">지역 이동이 가능하시다면..?</div>
             <div class="secondary-sub">다음 지역도 검토해보세요!</div>
 
