@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed A - Urban Engine</title>
+    <style>
+        @font-face {
+            font-family: 'esamanruLight';
+            src: url('Source/Fonts/esamanru Light.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'esamanruMedium';
+            src: url('Source/Fonts/esamanru Medium.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --violet: #6f41b0;
+            --gray: #808080;
+            --light-gray: #b3b3b3;
+            --black: #111111;
+            --white: #f9f9f9;
+            --orange: #f7931e;
+            --bg: #f6f7f9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'esamanruLight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--black);
+        }
+
+        .page {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 50px 50px 80px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 24px;
+            color: var(--black);
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0 28px;
+        }
+
+        .tab {
+            min-width: 80px;
+            padding: 6px 18px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-family: 'esamanruMedium', sans-serif;
+            background-color: var(--gray);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .tab.active {
+            background-color: var(--violet);
+        }
+
+        .section {
+            padding: 8px 6px;
+            margin-bottom: 34px;
+        }
+
+        .panel {
+            background-color: var(--white);
+            border-radius: 26px;
+            padding: 34px 38px;
+            box-shadow: 0 8px 20px rgba(17, 17, 17, 0.03);
+        }
+
+        .section-title {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 22px;
+            margin-bottom: 14px;
+        }
+
+        .section-subtitle {
+            color: var(--gray);
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .headline {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 30px;
+            margin-bottom: 14px;
+        }
+
+        .headline span {
+            color: var(--violet);
+        }
+
+        .bullet-list {
+            list-style: none;
+            display: grid;
+            gap: 8px;
+            color: var(--gray);
+        }
+
+        .bullet-list li::before {
+            content: "✓";
+            color: var(--violet);
+            margin-right: 8px;
+            font-family: 'esamanruMedium', sans-serif;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .pattern-card {
+            background: #f3f4f6;
+            border-radius: 22px;
+            padding: 24px;
+            text-align: center;
+            min-height: 118px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pattern-card span {
+            font-size: 15px;
+            color: var(--gray);
+        }
+
+        .pattern-card strong {
+            font-size: 20px;
+            font-family: 'esamanruMedium', sans-serif;
+            color: var(--violet);
+        }
+
+        .pattern-card strong.gray {
+            color: var(--gray);
+        }
+
+        .cta-chip {
+            margin-top: 18px;
+            width: 100%;
+            background-color: #9d9d9d;
+            color: var(--white);
+            border-radius: 18px;
+            padding: 10px 16px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .ranking-title {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .ranking-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 24px;
+            padding: 22px 0;
+            border-bottom: 1px solid #eef0f4;
+        }
+
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+
+        .ranking-label {
+            font-family: 'esamanruMedium', sans-serif;
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .ranking-name {
+            font-family: 'esamanruMedium', sans-serif;
+            color: var(--violet);
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .ranking-desc {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .metrics {
+            display: flex;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .metric-chip {
+            background-color: #f4f5f7;
+            color: var(--gray);
+            border-radius: 16px;
+            padding: 8px 14px;
+            font-size: 12px;
+            min-width: 86px;
+            text-align: center;
+        }
+
+        .metric-chip strong {
+            display: block;
+            margin-top: 4px;
+            font-family: 'esamanruMedium', sans-serif;
+            color: var(--black);
+        }
+
+        .metric-chip.orange strong {
+            color: var(--orange);
+        }
+
+        .cta-button {
+            display: inline-block;
+            margin-top: 8px;
+            background-color: var(--violet);
+            color: var(--white);
+            border-radius: 18px;
+            padding: 8px 18px;
+            font-size: 12px;
+            font-family: 'esamanruMedium', sans-serif;
+            text-decoration: none;
+        }
+
+        .map-placeholder {
+            width: 150px;
+            height: 94px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #eceff4 0%, #dfe3eb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-gray);
+            font-size: 12px;
+        }
+
+        .secondary-section {
+            margin-bottom: 24px;
+        }
+
+        .secondary-header {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .secondary-sub {
+            color: var(--light-gray);
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .bottom-banner {
+            margin-top: 40px;
+            background-color: var(--violet);
+            color: var(--white);
+            border-radius: 22px;
+            padding: 30px;
+            text-align: center;
+            font-family: 'esamanruMedium', sans-serif;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 960px) {
+            .page {
+                padding: 40px 20px 70px;
+            }
+
+            .panel {
+                padding: 28px 22px;
+            }
+
+            .pattern-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ranking-item {
+                grid-template-columns: 1fr;
+            }
+
+            .map-placeholder {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header>
+            <div class="logo">Urban Engine</div>
+        </header>
+
+        <div class="tab-group">
+            <div class="tab active">매매</div>
+            <div class="tab">전세</div>
+            <div class="tab">월세</div>
+        </div>
+
+        <section class="section">
+            <div class="section-subtitle">당신의 주거 선택 선호도는?</div>
+            <div class="headline">역 <span>가까운 게</span> 우선</div>
+            <ul class="bullet-list">
+                <li>출퇴근이랑 이동 시간 줄이는 게 중요함</li>
+                <li>집은 좀 커야 할 것 같은데, 고민중</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <div class="section-title">당신의 주거 선택 패턴은?</div>
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <span>지하철역 거리</span>
+                    <strong>가까움</strong>
+                </div>
+                <div class="pattern-card">
+                    <span>집값</span>
+                    <strong class="gray">비싸도 OK</strong>
+                </div>
+                <div class="pattern-card">
+                    <span>집 크기</span>
+                    <strong>커야함</strong>
+                </div>
+                <div class="pattern-card">
+                    <span>공원과의 거리</span>
+                    <strong class="gray">상관 없음</strong>
+                </div>
+            </div>
+            <div class="cta-chip">더 많은 기준을 보고싶다면?</div>
+        </section>
+
+        <section class="section panel">
+            <div class="ranking-title">서울에서 추천하는 지역 TOP3</div>
+
+            <div class="ranking-item">
+                <div>
+                    <div class="ranking-label">TOP 1</div>
+                    <div class="ranking-name">서울시 광진구 자양동, 자양로 2길 일대</div>
+                    <div class="ranking-desc">건대입구역 인접, 주거·상업 혼합 지역</div>
+                    <div class="metrics">
+                        <div class="metric-chip">지하철역 접근성<strong>최고</strong></div>
+                        <div class="metric-chip">주민 노후도<strong>적정</strong></div>
+                        <div class="metric-chip orange">주택 가격<strong>다소 비쌈</strong></div>
+                    </div>
+                    <a href="#" class="cta-button">영상으로 살펴보기</a>
+                </div>
+                <div class="map-placeholder">MAP PREVIEW</div>
+            </div>
+
+            <div class="ranking-item">
+                <div>
+                    <div class="ranking-label">TOP 2</div>
+                    <div class="ranking-name">서울시 서대문구, 충정로 일대</div>
+                    <div class="ranking-desc">광로 도심 접근성이 뛰어난 업무·주거 혼합 지역</div>
+                    <div class="metrics">
+                        <div class="metric-chip">지하철역 접근성<strong>최고</strong></div>
+                        <div class="metric-chip">주민 노후도<strong>적정</strong></div>
+                        <div class="metric-chip orange">주택 가격<strong>다소 비쌈</strong></div>
+                    </div>
+                    <a href="#" class="cta-button">영상으로 살펴보기</a>
+                </div>
+                <div class="map-placeholder">MAP PREVIEW</div>
+            </div>
+
+            <div class="ranking-item">
+                <div>
+                    <div class="ranking-label">TOP 3</div>
+                    <div class="ranking-name">서울시 강동구 천호동, 천호역 부근</div>
+                    <div class="ranking-desc">강동권 교통 거점에 위치한 주거 중심 지역</div>
+                    <div class="metrics">
+                        <div class="metric-chip">지하철역 접근성<strong>최고</strong></div>
+                        <div class="metric-chip">주민 노후도<strong>적정</strong></div>
+                        <div class="metric-chip orange">주택 가격<strong>다소 비쌈</strong></div>
+                    </div>
+                    <a href="#" class="cta-button">영상으로 살펴보기</a>
+                </div>
+                <div class="map-placeholder">MAP PREVIEW</div>
+            </div>
+        </section>
+
+        <section class="secondary-section panel">
+            <div class="secondary-header">지역 이동이 가능하시다면..?</div>
+            <div class="secondary-sub">다음 지역도 검토해보세요!</div>
+
+            <div class="ranking-item">
+                <div>
+                    <div class="ranking-label">근거리</div>
+                    <div class="ranking-name">광명시 철산동 역세권</div>
+                    <div class="ranking-desc">건대입구역과 접근성이 아주 뛰어남</div>
+                    <div class="metrics">
+                        <div class="metric-chip">지하철역 접근성<strong>최고</strong></div>
+                        <div class="metric-chip">주민 노후도<strong>적정</strong></div>
+                        <div class="metric-chip orange">주택 가격<strong>다소 비쌈</strong></div>
+                    </div>
+                    <a href="#" class="cta-button">영상으로 살펴보기</a>
+                </div>
+                <div class="map-placeholder">MAP PREVIEW</div>
+            </div>
+
+            <div class="ranking-item">
+                <div>
+                    <div class="ranking-label">근거리</div>
+                    <div class="ranking-name">광명시 철산동 역세권</div>
+                    <div class="ranking-desc">건대입구역과 접근성이 아주 뛰어남</div>
+                    <div class="metrics">
+                        <div class="metric-chip">지하철역 접근성<strong>최고</strong></div>
+                        <div class="metric-chip">주민 노후도<strong>적정</strong></div>
+                        <div class="metric-chip orange">주택 가격<strong>다소 비쌈</strong></div>
+                    </div>
+                    <a href="#" class="cta-button">영상으로 살펴보기</a>
+                </div>
+                <div class="map-placeholder">MAP PREVIEW</div>
+            </div>
+        </section>
+
+        <div class="bottom-banner">
+            궁금한 지역은 영상으로 살펴보기를 눌러보세요!<br>
+            선호에 맞는 맞춤형 피드를 보여드려요.
+        </div>
+    </div>
+</body>
+
+</html>
