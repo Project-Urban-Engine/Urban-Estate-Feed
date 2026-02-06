@@ -6,6 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feed A - Urban Engine</title>
     <style>
+        /* ==========================================================================
+        Urban Engine – Font Size Scale Reference (px-based)
+        기준: Web(Desktop) px → 반응형 축소 매핑
+        --------------------------------------------------------------------------
+        Web px | Tablet px | Mobile px | Small Mobile px
+        --------------------------------------------------------------------------
+        44 | 38 | 32 | 26
+        38 | 34 | 28 | 24
+        28 | 26 | 24 | 20
+        24 | 22 | 18 | 16
+        22 | 20 | 16 | 14
+        20 | 18 | 14 | 13
+        18 | 16 | 14 | 13
+        16 | 16 | 15 | 14
+        15 | 15 | 14 | 13
+        14 | 14 | 13 | 13
+        13 | 13 | 13 | 13
+
+        Usage rule:
+        - Web px 값을 기준으로 선택
+        - Tablet / Mobile / Small Mobile은 위 매핑을 그대로 적용
+        - clamp(), media query, rem 변환의 기준 테이블로 사용
+        ========================================================================== */
+
         @font-face {
             font-family: 'esamanruLight';
             src: url('Source/Fonts/esamanru Light.ttf') format('truetype');
@@ -59,6 +83,13 @@
             font-family: 'esamanruMedium', sans-serif;
             font-size: 24px;
             color: var(--black);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
         }
 
         .tab-group {
@@ -77,10 +108,27 @@
             background-color: var(--gray);
             color: var(--white);
             text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab:active {
+            transform: translateY(0);
         }
 
         .tab.active {
-            background-color: var(--violet);
+            background: linear-gradient(135deg, #8B5CF6 0%, #6f41b0 100%);
+            box-shadow: 0 4px 12px rgba(111, 65, 176, 0.3);
+        }
+
+        .tab.active:hover {
+            box-shadow: 0 6px 16px rgba(111, 65, 176, 0.4);
         }
 
         .section {
@@ -108,7 +156,10 @@
         }
 
         .headline span {
-            color: var(--violet);
+            background: linear-gradient(135deg, #8B5CF6 0%, #6f41b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .bullet-list {
@@ -119,11 +170,27 @@
             font-size: 22px;
         }
 
+        .bullet-list li {
+            transition: all 0.3s ease;
+            padding: 4px 0;
+            cursor: default;
+        }
+
+        .bullet-list li:hover {
+            transform: translateX(5px);
+            color: var(--black);
+        }
+
         .bullet-list li::before {
             content: "✓";
             color: var(--violet);
             margin-right: 8px;
             font-family: 'esamanruMedium', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .bullet-list li:hover::before {
+            transform: scale(1.2);
         }
 
         .pattern-grid {
@@ -145,6 +212,17 @@
             justify-content: center;
             gap: 20px;
             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+        }
+
+        .pattern-card:active {
+            transform: translateY(-2px);
         }
 
         .pattern-card span {
@@ -171,6 +249,18 @@
             padding: 10px 16px;
             text-align: center;
             font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .cta-chip:hover {
+            background-color: #959595;
+            transform: scale(1.02);
+        }
+
+        .cta-chip:active {
+            transform: scale(0.98);
         }
 
         .ranking-title {
@@ -206,6 +296,12 @@
             margin-bottom: 30px;
             border: 1px solid rgba(17, 17, 17, 0.06);
             box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .ranking-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
 
         .ranking-label {
@@ -225,6 +321,7 @@
             color: var(--violet);
             font-size: 24px;
             margin-bottom: 0px;
+            transition: all 0.3s ease;
         }
 
         .ranking-desc {
@@ -253,18 +350,42 @@
             justify-content: center;
             align-items: center;
             font-family: 'esamanruMedium', sans-serif;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .metric-chip:hover {
+            background-color: #eceef2;
+            transform: scale(1.03);
         }
 
         .metric-chip strong {
             display: block;
             margin-top: 6px;
             font-family: 'esamanruMedium', sans-serif;
-            color: var(--black);
+            color: var(--gray);
             font-size: 22px;
+            transition: all 0.3s ease;
+        }
+
+        .metric-chip.orange {
+            transition: all 0.3s ease;
+        }
+
+        .metric-chip.orange:hover {
+            background: linear-gradient(135deg, rgba(247, 147, 30, 0.1) 0%, rgba(247, 147, 30, 0.05) 100%);
         }
 
         .metric-chip.orange strong {
             color: var(--orange);
+        }
+
+        .metric-chip.violet {
+            transition: all 0.3s ease;
+        }
+
+        .metric-chip.violet:hover {
+            background: linear-gradient(135deg, rgba(111, 65, 176, 0.1) 0%, rgba(111, 65, 176, 0.05) 100%);
         }
 
         .metric-chip.violet strong {
@@ -275,7 +396,7 @@
         .cta-button {
             display: block;
             margin-top: 5px;
-            background-color: var(--violet);
+            background: linear-gradient(135deg, #8B5CF6 0%, #6f41b0 100%);
             color: var(--white);
             border-radius: 22px;
             padding: 12px 22px;
@@ -285,6 +406,19 @@
             width: 100%;
             text-align: center;
             box-sizing: border-box;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(111, 65, 176, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(111, 65, 176, 0.4);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
         }
 
         .map-placeholder {
@@ -317,7 +451,7 @@
 
         .bottom-banner {
             margin-top: 100px;
-            background-color: var(--violet);
+            background: linear-gradient(135deg, #8B5CF6 0%, #6f41b0 100%);
             color: var(--white);
             font-size: 24px;
             border-radius: 25px;
@@ -330,23 +464,331 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            box-shadow: 0 8px 24px rgba(111, 65, 176, 0.3);
+            transition: all 0.3s ease;
         }
 
+        .bottom-banner:hover {
+            box-shadow: 0 12px 32px rgba(111, 65, 176, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* 태블릿 */
         @media (max-width: 960px) {
             .page {
-                padding: 40px 20px 70px;
+                padding: 40px 30px 70px;
             }
 
-            .pattern-grid {
-                grid-template-columns: 1fr;
+            .logo {
+                font-size: 22px;
+            }
+
+            .section-title,
+            .ranking-title,
+            .secondary-header {
+                font-size: 26px;
+                margin-top: 150px;
+            }
+
+            .section-subtitle,
+            .secondary-sub {
+                font-size: 22px;
+            }
+
+            .headline {
+                font-size: 38px;
+            }
+
+            .bullet-list {
+                font-size: 20px;
+            }
+
+            .pattern-card {
+                min-height: 180px;
+            }
+
+            .pattern-card span {
+                font-size: 24px;
+            }
+
+            .pattern-card strong {
+                font-size: 34px;
             }
 
             .ranking-item {
                 grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .ranking-item>.map-placeholder {
+                margin-top: 20px;
+                height: 200px;
+            }
+        }
+
+        /* 모바일 */
+        @media (max-width: 768px) {
+            .page {
+                padding: 30px 20px 60px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .tab-group {
+                gap: 10px;
+                margin: 80px 0 40px;
+            }
+
+            .tab {
+                padding: 10px 16px;
+                font-size: 14px;
+                border-radius: 12px;
+                max-width: none;
+            }
+
+            .section-title,
+            .ranking-title,
+            .secondary-header {
+                font-size: 24px;
+                margin-top: 100px;
+                margin-bottom: 12px;
+            }
+
+            .section-subtitle,
+            .secondary-sub {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+
+            .headline {
+                font-size: 32px;
+                margin-bottom: 18px;
+            }
+
+            .bullet-list {
+                font-size: 16px;
+                gap: 6px;
+            }
+
+            .pattern-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+                margin-top: 14px;
+            }
+
+            .pattern-card {
+                border-radius: 28px;
+                padding: 20px;
+                min-height: 140px;
+                gap: 14px;
+            }
+
+            .pattern-card span {
+                font-size: 18px;
+            }
+
+            .pattern-card strong {
+                font-size: 28px;
+            }
+
+            .cta-chip {
+                margin-top: 30px;
+                font-size: 14px;
+                padding: 12px 14px;
+                border-radius: 14px;
+            }
+
+            .ranking-item {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .ranking-card {
+                border-radius: 24px;
+                padding: 24px 20px;
+                margin-bottom: 20px;
+            }
+
+            .ranking-label {
+                font-size: 20px;
+            }
+
+            .ranking-name {
+                font-size: 20px;
+            }
+
+            .ranking-desc {
+                font-size: 14px;
+            }
+
+            .metrics {
+                flex-direction: column;
+                gap: 10px;
+                margin: 18px 0 16px;
+            }
+
+            .metric-chip {
+                padding: 14px 18px;
+                font-size: 14px;
+                min-height: auto;
+                border-radius: 18px;
+            }
+
+            .metric-chip strong {
+                margin-top: 4px;
+                font-size: 18px;
+            }
+
+            .cta-button {
+                padding: 14px 20px;
+                font-size: 15px;
+                border-radius: 18px;
+            }
+
+            .ranking-item>.map-placeholder {
+                margin-top: 0;
+                height: 180px;
+            }
+
+            .bottom-banner {
+                margin-top: 80px;
+                font-size: 18px;
+                border-radius: 20px;
+                padding: 30px 20px;
+                min-height: 160px;
+            }
+        }
+
+        /* 작은 모바일 */
+        @media (max-width: 480px) {
+            .page {
+                padding: 20px 16px 50px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .tab-group {
+                gap: 8px;
+                margin: 60px 0 30px;
+            }
+
+            .tab {
+                padding: 8px 12px;
+                font-size: 13px;
+                border-radius: 10px;
+            }
+
+            .section-title,
+            .ranking-title,
+            .secondary-header {
+                font-size: 20px;
+                margin-top: 80px;
+                margin-bottom: 10px;
+            }
+
+            .section-subtitle,
+            .secondary-sub {
+                font-size: 16px;
+                margin-bottom: 8px;
+            }
+
+            .headline {
+                font-size: 26px;
+                margin-bottom: 14px;
+            }
+
+            .bullet-list {
+                font-size: 14px;
+                gap: 4px;
+            }
+
+            .pattern-grid {
+                gap: 12px;
+                margin-top: 12px;
+            }
+
+            .pattern-card {
+                border-radius: 20px;
+                padding: 16px;
+                min-height: 120px;
+                gap: 10px;
+            }
+
+            .pattern-card span {
+                font-size: 16px;
+            }
+
+            .pattern-card strong {
+                font-size: 24px;
+            }
+
+            .cta-chip {
+                margin-top: 24px;
+                font-size: 13px;
+                padding: 10px 12px;
+                border-radius: 12px;
+            }
+
+            .ranking-card {
+                border-radius: 20px;
+                padding: 20px 16px;
+                margin-bottom: 16px;
+            }
+
+            .ranking-label {
+                font-size: 18px;
+            }
+
+            .ranking-name {
+                font-size: 18px;
+            }
+
+            .ranking-desc {
+                font-size: 13px;
+            }
+
+            .metrics {
+                gap: 8px;
+                margin: 14px 0 14px;
+            }
+
+            .metric-chip {
+                padding: 12px 16px;
+                font-size: 13px;
+                border-radius: 16px;
+            }
+
+            .metric-chip strong {
+                margin-top: 3px;
+                font-size: 16px;
+            }
+
+            .cta-button {
+                padding: 12px 18px;
+                font-size: 14px;
+                border-radius: 16px;
+            }
+
+            .ranking-item>.map-placeholder {
+                height: 150px;
+                border-radius: 14px;
             }
 
             .map-placeholder {
-                width: 100%;
+                border-radius: 14px;
+            }
+
+            .bottom-banner {
+                margin-top: 60px;
+                font-size: 16px;
+                border-radius: 18px;
+                padding: 25px 16px;
+                min-height: 140px;
+                line-height: 1.6;
             }
         }
     </style>
