@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urban Engine - Feed A</title>
+  <style>
+    /* =========================================================
+      Feed A - UI Skeleton
+      - 1080px 기준 좌/우 여백 50px
+      - 상단 여백 50px
+      - Colors / Fonts: user spec
+    ========================================================= */
+
+    :root{
+      --violet:#6f41b0;
+      --gray:#808080;
+      --light-gray:#b3b3b3;
+      --black:#111111;
+      --white:#F9F9F9;
+      --orange:#f7931e;
+      --bg:#f6f7f9;
+
+      --page-width:1080px;
+      --side-pad:50px;
+      --top-pad:50px;
+
+      --radius-lg:26px;
+      --radius-md:18px;
+      --radius-sm:12px;
+
+      --shadow: 0 10px 24px rgba(0,0,0,0.06);
+      --shadow-soft: 0 8px 18px rgba(0,0,0,0.05);
+      --stroke: 1px solid rgba(17,17,17,0.06);
+    }
+
+    /* ========== Font (replace src paths to your real files) ========== */
+    @font-face{
+      font-family:"esamanru";
+      font-weight:300;
+      font-style:normal;
+      src:url("./fonts/esamanru-Light.woff2") format("woff2");
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"esamanru";
+      font-weight:500;
+      font-style:normal;
+      src:url("./fonts/esamanru-Medium.woff2") format("woff2");
+      font-display:swap;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--black);
+      font-family:"esamanru", system-ui, -apple-system, "Segoe UI", sans-serif;
+      letter-spacing:-0.2px;
+    }
+
+    /* ========== Page Frame ========== */
+    .page{
+      max-width: var(--page-width);
+      margin: 0 auto;
+      padding: var(--top-pad) var(--side-pad) 0;
+    }
+
+    /* Header */
+    .brand{
+      font-weight:500; /* Medium */
+      font-size:20px;
+      line-height:1;
+      margin-bottom:22px;
+    }
+
+    /* Tabs */
+    .tabs{
+      display:flex;
+      gap:10px;
+      margin-bottom:26px;
+    }
+    .tab{
+      border:none;
+      cursor:pointer;
+      padding:10px 18px;
+      border-radius:999px;
+      font-size:14px;
+      font-weight:500;
+      background:var(--light-gray);
+      color:var(--white);
+      transition: transform .08s ease, background .15s ease, opacity .15s ease;
+    }
+    .tab:active{ transform:scale(0.98); }
+    .tab.is-active{
+      background:var(--violet);
+    }
+
+    /* Section heading */
+    .section{
+      margin-bottom:26px;
+    }
+    .kicker{
+      color:var(--light-gray);
+      font-size:16px;
+      font-weight:300;
+      margin-bottom:6px;
+    }
+    .headline{
+      font-size:44px;
+      font-weight:500;
+      margin:0 0 10px 0;
+    }
+    .bullets{
+      margin:0;
+      padding:0;
+      list-style:none;
+      color:var(--gray);
+      font-size:15px;
+      line-height:1.6;
+    }
+    .bullets li{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      margin:6px 0;
+    }
+    .check{
+      color:var(--violet);
+      font-weight:500;
+      line-height:1.6;
+    }
+
+    /* Preference grid */
+    .subhead{
+      margin-top:34px;
+      margin-bottom:16px;
+      font-size:20px;
+      font-weight:500;
+      color:var(--black);
+    }
+
+    .pref-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .pref-card{
+      background:var(--white);
+      border-radius: var(--radius-lg);
+      padding:20px 18px;
+      box-shadow: var(--shadow-soft);
+      border: var(--stroke);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      min-height:106px;
+      text-align:center;
+      cursor:pointer;
+      transition: transform .08s ease, box-shadow .15s ease;
+    }
+    .pref-card:active{ transform:scale(0.99); }
+    .pref-label{
+      font-size:16px;
+      font-weight:500;
+      color:var(--black);
+      margin-bottom:6px;
+    }
+    .pref-value{
+      font-size:22px;
+      font-weight:500;
+      color:var(--light-gray);
+    }
+    .pref-card.is-selected .pref-value{
+      color:var(--violet);
+    }
+
+    .more-btn{
+      width:100%;
+      border:none;
+      background:var(--light-gray);
+      color:var(--white);
+      border-radius: 14px;
+      padding:12px 14px;
+      font-weight:500;
+      cursor:pointer;
+      transition: transform .08s ease, opacity .15s ease;
+    }
+    .more-btn:active{ transform:scale(0.99); }
+
+    /* Divider / White section */
+    .panel{
+      margin-top:28px;
+      background:transparent;
+      padding-bottom:26px;
+    }
+
+    .panel-title{
+      margin:26px 0 14px;
+      font-size:20px;
+      font-weight:500;
+      color:var(--black);
+    }
+
+    /* Recommendation list */
+    .rec-list{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+    .rec-item{
+      background:var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      border: var(--stroke);
+      overflow:hidden;
+      display:grid;
+      grid-template-columns: 1fr 220px;
+      gap:16px;
+      padding:16px;
+      align-items:stretch;
+    }
+    .rec-left{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding:6px 0 4px 6px;
+    }
+    .rec-rank{
+      font-size:14px;
+      font-weight:500;
+      color:var(--black);
+      opacity:.9;
+    }
+    .rec-name{
+      font-size:18px;
+      font-weight:500;
+      color:var(--violet);
+      margin:2px 0 2px;
+    }
+    .rec-desc{
+      font-size:14px;
+      color:var(--gray);
+      line-height:1.5;
+    }
+
+    .metric-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+    .metric{
+      background:#ffffff;
+      border-radius:999px;
+      border: 1px solid rgba(17,17,17,0.08);
+      padding:10px 12px;
+      min-width: 160px;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .metric .k{
+      font-size:12px;
+      color:var(--gray);
+      font-weight:300;
+    }
+    .metric .v{
+      font-size:14px;
+      font-weight:500;
+      color:var(--black);
+    }
+    .metric .v.orange{
+      color:var(--orange);
+    }
+
+    .cta-row{
+      margin-top:8px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .primary{
+      border:none;
+      cursor:pointer;
+      background:var(--violet);
+      color:var(--white);
+      padding:12px 14px;
+      border-radius: 999px;
+      font-weight:500;
+      flex: 0 0 auto;
+      min-width: 210px;
+      transition: transform .08s ease, opacity .15s ease;
+    }
+    .primary:active{ transform:scale(0.99); }
+
+    .rec-right{
+      border-radius: 18px;
+      background: #eceff3;
+      border: 1px solid rgba(17,17,17,0.06);
+      position:relative;
+      overflow:hidden;
+    }
+    .map-ph{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(17,17,17,0.35);
+      font-size:12px;
+      font-weight:500;
+      text-align:center;
+      padding:14px;
+    }
+    .pin{
+      width:34px; height:34px;
+      border-radius:999px;
+      background:rgba(111,65,176,0.12);
+      border:1px solid rgba(111,65,176,0.25);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:10px;
+    }
+    .pin::before{
+      content:"📍";
+      font-size:16px;
+    }
+
+    /* Secondary section title */
+    .hint-title{
+      margin:34px 0 6px;
+      font-size:18px;
+      font-weight:500;
+      color:var(--black);
+    }
+    .hint-sub{
+      margin:0 0 16px 0;
+      font-size:14px;
+      color:var(--light-gray);
+      font-weight:300;
+    }
+
+    /* Footer CTA */
+    .footer-cta{
+      margin-top:34px;
+      background:var(--violet);
+      color:var(--white);
+      border-radius: 26px 26px 0 0;
+      padding:26px 18px;
+      text-align:center;
+    }
+    .footer-cta .t1{
+      font-size:16px;
+      font-weight:500;
+      margin-bottom:6px;
+    }
+    .footer-cta .t2{
+      font-size:14px;
+      font-weight:300;
+      opacity:.95;
+    }
+
+    /* ========== Responsive (mobile) ========== */
+    @media (max-width: 920px){
+      :root{
+        --side-pad:20px;
+        --top-pad:26px;
+      }
+      .headline{ font-size:34px; }
+      .rec-item{
+        grid-template-columns: 1fr;
+      }
+      .rec-right{
+        height:140px;
+      }
+      .metric{ min-width: 150px; }
+      .primary{ min-width: 180px; width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Header -->
+    <div class="brand">Urban Engine</div>
+
+    <!-- Tabs -->
+    <div class="tabs" id="tabs">
+      <button class="tab is-active" data-tab="sale">매매</button>
+      <button class="tab" data-tab="jeonse">전세</button>
+      <button class="tab" data-tab="rent">월세</button>
+    </div>
+
+    <!-- Preference Summary -->
+    <section class="section" id="hero">
+      <div class="kicker">당신의 주거 선택 선호도는?</div>
+      <h1 class="headline" id="heroTitle">역 가까운 게 우선</h1>
+      <ul class="bullets" id="heroBullets">
+        <li><span class="check">✓</span><span>출퇴근이랑 이동 시간 줄이는 게 중요함</span></li>
+        <li><span class="check">✓</span><span>집은 좀 커야 할 것 같은데, 고민중</span></li>
+      </ul>
+
+      <div class="subhead">당신의 주거 선택 패턴은?</div>
+
+      <div class="pref-grid" id="prefGrid">
+        <!-- JS render -->
+      </div>
+
+      <button class="more-btn" type="button">더 많은 기준을 보고싶다면?</button>
+    </section>
+
+    <!-- Recommendations -->
+    <section class="panel">
+      <div class="panel-title">서울에서 추천하는 지역 TOP3</div>
+      <div class="rec-list" id="top3List">
+        <!-- JS render -->
+      </div>
+
+      <div class="hint-title">지역 이동이 가능하시다면..?</div>
+      <p class="hint-sub">다음 지역도 검토해보세요!</p>
+
+      <div class="rec-list" id="nearList">
+        <!-- JS render -->
+      </div>
+
+      <div class="footer-cta">
+        <div class="t1">궁금한 지역은 영상으로 살펴보기를 눌러보세요!</div>
+        <div class="t2">선호에 맞는 맞춤형 피드를 보여드려요.</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    /**
+     * =========================================================
+     *  Feed A data scaffold
+     *  - Replace DATA with fetch(JSON) later
+     * =========================================================
+     */
+
+    const DATA = {
+      hero: {
+        title: "역 가까운 게 우선",
+        bullets: [
+          "출퇴근이랑 이동 시간 줄이는 게 중요함",
+          "집은 좀 커야 할 것 같은데, 고민중"
+        ]
+      },
+      patterns: [
+        { key: "subway_dist", label: "지하철역 거리", value: "가까움", selected: true },
+        { key: "price", label: "집값", value: "비싸도 OK", selected: false },
+        { key: "size", label: "집 크기", value: "커야함", selected: true },
+        { key: "park_dist", label: "공원과의 거리", value: "상관 없음", selected: false }
+      ],
+      top3: [
+        {
+          rank: "TOP 1",
+          title: "서울시 광진구 자양동, 자양로 2길 일대",
+          desc: "건대입구역 인접, 주거·상업 혼합 지역",
+          metrics: [
+            { k: "지하철역 접근성", v: "최고" },
+            { k: "주민 노후도", v: "적정" },
+            { k: "주택 가격", v: "다소 비쌈", tone: "orange" }
+          ],
+          mapText: "지도 썸네일\n(나중에 이미지/타일 삽입)"
+        },
+        {
+          rank: "TOP 2",
+          title: "서울시 서대문구, 충정로 일대",
+          desc: "종로·도심 접근성이 뛰어난 업무·주거 혼합 지역",
+          metrics: [
+            { k: "지하철역 접근성", v: "최고" },
+            { k: "주민 노후도", v: "적정" },
+            { k: "주택 가격", v: "다소 비쌈", tone: "orange" }
+          ],
+          mapText: "지도 썸네일\n(나중에 이미지/타일 삽입)"
+        },
+        {
+          rank: "TOP 3",
+          title: "서울시 강동구 천호동, 천호역 부근",
+          desc: "강동권 교통 거점에 위치한 주거 중심 지역",
+          metrics: [
+            { k: "지하철역 접근성", v: "최고" },
+            { k: "주민 노후도", v: "적정" },
+            { k: "주택 가격", v: "다소 비쌈", tone: "orange" }
+          ],
+          mapText: "지도 썸네일\n(나중에 이미지/타일 삽입)"
+        }
+      ],
+      near: [
+        {
+          rank: "근거리",
+          title: "광명시 철산동 역세권",
+          desc: "건대입구역권 접근성이 아주 뛰어남",
+          metrics: [
+            { k: "지하철역 접근성", v: "최고" },
+            { k: "주민 노후도", v: "적정" },
+            { k: "주택 가격", v: "다소 비쌈", tone: "orange" }
+          ],
+          mapText: "지도 썸네일\n(나중에 이미지/타일 삽입)"
+        },
+        {
+          rank: "근거리",
+          title: "광명시 철산동 역세권",
+          desc: "건대입구역권 접근성이 아주 뛰어남",
+          metrics: [
+            { k: "지하철역 접근성", v: "최고" },
+            { k: "주민 노후도", v: "적정" },
+            { k: "주택 가격", v: "다소 비쌈", tone: "orange" }
+          ],
+          mapText: "지도 썸네일\n(나중에 이미지/타일 삽입)"
+        }
+      ]
+    };
+
+    function renderHero(){
+      document.getElementById("heroTitle").textContent = DATA.hero.title;
+
+      const ul = document.getElementById("heroBullets");
+      ul.innerHTML = "";
+      DATA.hero.bullets.forEach(t => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="check">✓</span><span>${escapeHtml(t)}</span>`;
+        ul.appendChild(li);
+      });
+    }
+
+    function renderPatterns(){
+      const grid = document.getElementById("prefGrid");
+      grid.innerHTML = "";
+      DATA.patterns.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "pref-card" + (p.selected ? " is-selected" : "");
+        card.dataset.key = p.key;
+
+        card.innerHTML = `
+          <div class="pref-label">${escapeHtml(p.label)}</div>
+          <div class="pref-value">${escapeHtml(p.value)}</div>
+        `;
+
+        // optional: toggle selection (UI only)
+        card.addEventListener("click", () => {
+          p.selected = !p.selected;
+          card.classList.toggle("is-selected", p.selected);
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    function recItemTemplate(item){
+      const metricsHtml = item.metrics.map(m => {
+        const vClass = m.tone === "orange" ? "v orange" : "v";
+        return `
+          <div class="metric">
+            <div class="k">${escapeHtml(m.k)}</div>
+            <div class="${vClass}">${escapeHtml(m.v)}</div>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <div class="rec-item">
+          <div class="rec-left">
+            <div class="rec-rank">${escapeHtml(item.rank)}</div>
+            <div class="rec-name">${escapeHtml(item.title)}</div>
+            <div class="rec-desc">${escapeHtml(item.desc)}</div>
+
+            <div class="metric-row">
+              ${metricsHtml}
+            </div>
+
+            <div class="cta-row">
+              <button class="primary" type="button">영상으로 살펴보기</button>
+            </div>
+          </div>
+
+          <div class="rec-right" aria-label="map thumbnail placeholder">
+            <div class="map-ph">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                <div class="pin"></div>
+                <div style="white-space:pre-line; line-height:1.4;">
+                  ${escapeHtml(item.mapText || "지도 썸네일")}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLists(){
+      const top3 = document.getElementById("top3List");
+      top3.innerHTML = DATA.top3.map(recItemTemplate).join("");
+
+      const near = document.getElementById("nearList");
+      near.innerHTML = DATA.near.map(recItemTemplate).join("");
+    }
+
+    function wireTabs(){
+      const tabs = document.getElementById("tabs");
+      tabs.addEventListener("click", (e) => {
+        const btn = e.target.closest(".tab");
+        if(!btn) return;
+
+        [...tabs.querySelectorAll(".tab")].forEach(t => t.classList.remove("is-active"));
+        btn.classList.add("is-active");
+
+        // 여기서 나중에 탭별 JSON을 불러오거나 DATA를 교체하면 됩니다.
+        // 예: loadData(btn.dataset.tab)
+        console.log("tab:", btn.dataset.tab);
+      });
+    }
+
+    // minimal escape
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // init
+    renderHero();
+    renderPatterns();
+    renderLists();
+    wireTabs();
+  </script>
+</body>
+</html>

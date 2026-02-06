@@ -389,10 +389,8 @@
 
         function selectPersona(personaId) {
             console.log(`페르소나 ${personaId} 선택됨`);
-            // 여기에 페르소나 선택 후 동작을 추가할 수 있습니다
-            alert(`페르소나 ${personaId}을(를) 선택하셨습니다!`);
-            // 예: 다음 페이지로 이동
-            // window.location.href = 'next-page.html';
+            // feed-a.html로 페르소나 ID를 파라미터로 전달하여 이동
+            window.location.href = `feed-a.html?personaId=${personaId}`;
         }
 
         // 스크롤 애니메이션 설정

@@ -1,0 +1,62 @@
+{
+    "price_level": {
+        "label": "집값",
+        "direction_map": {
+            "저렴": "저렴",
+            "보통": "보통",
+            "비싸도OK": "비싸도 OK"
+        }
+    },
+    "trade_activity": {
+        "label": "거래량",
+        "direction_map": {
+            "활발선호": "활발",
+            "상관없음": "상관 없음"
+        }
+    },
+    "building_age": {
+        "label": "집 상태",
+        "direction_map": {
+            "신축": "신축",
+            "비교적신축": "비교적 신축",
+            "구옥": "구옥도 가능",
+            "상관없음": "상관 없음"
+        }
+    },
+    "area_size": {
+        "label": "집 크기",
+        "direction_map": {
+            "넓게": "커야함",
+            "보통": "보통",
+            "작게": "작아도 OK"
+        }
+    },
+    "parking": {
+        "label": "주차",
+        "direction_map": {
+            "세대당주차충분": "주차 여유",
+            "상관없음": "상관 없음"
+        }
+    },
+    "high_floor": {
+        "label": "층수",
+        "direction_map": {
+            "20층이상선호": "고층 선호",
+            "상관없음": "상관 없음"
+        }
+    },
+    "bus_access": {
+        "label": "버스정류장 거리",
+        "direction_map": {
+            "가까움선호": "가까움",
+            "상관없음": "상관 없음"
+        }
+    },
+    "subway_access": {
+        "label": "지하철역 거리",
+        "direction_map": {
+            "가까움선호": "가까움",
+            "상관없음": "상관 없음"
+        }
+    }
+}

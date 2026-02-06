@@ -808,8 +808,8 @@
 
         <section class="section">
             <div class="section-subtitle">당신의 주거 선택 선호도는?</div>
-            <div class="headline">역 가까운 게 우선</div>
-            <ul class="bullet-list">
+            <div class="headline" id="personaHeadline">역 가까운 게 우선</div>
+            <ul class="bullet-list" id="personaBulletList">
                 <li>출퇴근이랑 이동 시간 줄이는 게 중요함</li>
                 <li>집은 좀 커야 할 것 같은데, 고민중</li>
             </ul>
@@ -947,6 +947,62 @@
             선호에 맞는 맞춤형 피드를 보여드려요.
         </div>
     </div>
+
+    <script>
+        // URL 파라미터에서 personaId 가져오기
+        function getPersonaIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('personaId') || 'P01'; // 디폴트값: P01
+        }
+
+        // 페르소나 데이터 로드 및 적용
+        async function loadPersonaData() {
+            try {
+                const personaId = getPersonaIdFromUrl();
+                console.log('Loading persona:', personaId);
+
+                // JSON 파일 로드
+                const response = await fetch('Source/Feed_A_Persona_Pref.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load persona data');
+                }
+
+                const personaData = await response.json();
+
+                // 해당 페르소나 찾기
+                const selectedPersona = personaData.find(p => p.persona_id === personaId);
+
+                if (selectedPersona) {
+                    // headline 업데이트
+                    const headlineElement = document.getElementById('personaHeadline');
+                    if (headlineElement) {
+                        headlineElement.textContent = selectedPersona.headline;
+                    }
+
+                    // bullet-list 업데이트
+                    const bulletListElement = document.getElementById('personaBulletList');
+                    if (bulletListElement && selectedPersona.checks) {
+                        bulletListElement.innerHTML = '';
+                        selectedPersona.checks.forEach(check => {
+                            const li = document.createElement('li');
+                            li.textContent = check;
+                            bulletListElement.appendChild(li);
+                        });
+                    }
+
+                    console.log('Persona loaded successfully:', selectedPersona.persona_name);
+                } else {
+                    console.warn('Persona not found:', personaId);
+                }
+            } catch (error) {
+                console.error('Error loading persona data:', error);
+                // 에러 발생 시 디폴트 콘텐츠 유지
+            }
+        }
+
+        // 페이지 로드 시 실행
+        window.addEventListener('DOMContentLoaded', loadPersonaData);
+    </script>
 </body>
 
 </html>
