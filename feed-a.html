@@ -1039,6 +1039,70 @@
             }
         }
 
+        function parseCsv(text) {
+            const lines = text.trim().split(/\r?\n/);
+            const headers = lines.shift().split(',').map(header => header.replace(/^\uFEFF/, '').trim());
+            return lines.map(line => {
+                const values = line.split(',');
+                return headers.reduce((acc, header, index) => {
+                    acc[header] = values[index] ? values[index].trim() : '';
+                    return acc;
+                }, {});
+            });
+        }
+
+        async function loadPersonaPreferenceCards(personaId) {
+            try {
+                const [cardResponse, csvResponse] = await Promise.all([
+                    fetch('Source/Feed_A_Persona_Pref_Card.json'),
+                    fetch('Source/Persona_1.csv')
+                ]);
+
+                if (!cardResponse.ok || !csvResponse.ok) {
+                    throw new Error('Failed to load preference data');
+                }
+
+                const prefCardData = await cardResponse.json();
+                const csvText = await csvResponse.text();
+                const rows = parseCsv(csvText)
+                    .filter(row => row.persona_id === personaId)
+                    .filter(row => prefCardData[row.preference_key]);
+
+                const sortedRows = rows
+                    .map(row => ({
+                        ...row,
+                        priority: Number.isNaN(parseInt(row.priority, 10)) ? 0 : parseInt(row.priority, 10)
+                    }))
+                    .sort((a, b) => b.priority - a.priority);
+
+                const topRows = sortedRows.slice(0, 4);
+                const patternGrid = document.getElementById('personaPatternGrid');
+                if (!patternGrid || topRows.length === 0) {
+                    return;
+                }
+
+                patternGrid.innerHTML = '';
+                topRows.forEach(row => {
+                    const cardConfig = prefCardData[row.preference_key];
+                    const card = document.createElement('div');
+                    card.className = 'pattern-card';
+
+                    const label = document.createElement('span');
+                    label.textContent = cardConfig.label;
+
+                    const value = document.createElement('strong');
+                    value.textContent = cardConfig.direction_map[row.direction] || row.direction;
+                    value.className = row.direction === '상관없음' ? 'gray' : 'violet';
+
+                    card.appendChild(label);
+                    card.appendChild(value);
+                    patternGrid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading preference cards:', error);
+            }
+        }
+
         // 페르소나 데이터 로드 및 적용
         async function loadPersonaData() {
             try {

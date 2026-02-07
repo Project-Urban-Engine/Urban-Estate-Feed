@@ -2,601 +2,601 @@
     {
         "persona_id":"P01",
         "cty_cd":"11215",
-        "dist_id":"11215710_010",
-        "score":null
+        "dist_id":"11215847_060",
+        "score":0.711
     },
     {
         "persona_id":"P01",
         "cty_cd":"11215",
         "dist_id":"11215710_011",
-        "score":null
+        "score":0.685
+    },
+    {
+        "persona_id":"P01",
+        "cty_cd":"11215",
+        "dist_id":"11215830_010",
+        "score":0.679
+    },
+    {
+        "persona_id":"P01",
+        "cty_cd":"11215",
+        "dist_id":"11215860_060",
+        "score":0.661
     },
     {
         "persona_id":"P01",
         "cty_cd":"11215",
         "dist_id":"11215710_020",
-        "score":null
-    },
-    {
-        "persona_id":"P01",
-        "cty_cd":"11215",
-        "dist_id":"11215710_021",
-        "score":null
-    },
-    {
-        "persona_id":"P01",
-        "cty_cd":"11215",
-        "dist_id":"11215710_030",
-        "score":null
+        "score":0.656
     },
     {
         "persona_id":"P01",
         "cty_cd":"11215",
         "dist_id":"11215710_040",
-        "score":null
+        "score":0.651
     },
     {
         "persona_id":"P01",
         "cty_cd":"11215",
-        "dist_id":"11215730_010",
-        "score":null
+        "dist_id":"11215750_020",
+        "score":0.632
     },
     {
         "persona_id":"P01",
         "cty_cd":"11215",
-        "dist_id":"11215730_020",
-        "score":null
+        "dist_id":"11215740_030",
+        "score":0.627
     },
     {
         "persona_id":"P01",
         "cty_cd":"11215",
-        "dist_id":"11215730_030",
-        "score":null
+        "dist_id":"11215780_030",
+        "score":0.627
     },
     {
         "persona_id":"P01",
         "cty_cd":"11215",
-        "dist_id":"11215730_040",
-        "score":null
+        "dist_id":"11215710_030",
+        "score":0.625
     },
     {
         "persona_id":"P02",
         "cty_cd":"11215",
-        "dist_id":"11215710_010",
-        "score":null
+        "dist_id":"11215760_060",
+        "score":0.682
+    },
+    {
+        "persona_id":"P02",
+        "cty_cd":"11215",
+        "dist_id":"11215760_030",
+        "score":0.654
+    },
+    {
+        "persona_id":"P02",
+        "cty_cd":"11215",
+        "dist_id":"11215847_060",
+        "score":0.644
+    },
+    {
+        "persona_id":"P02",
+        "cty_cd":"11215",
+        "dist_id":"11215770_012",
+        "score":0.643
+    },
+    {
+        "persona_id":"P02",
+        "cty_cd":"11215",
+        "dist_id":"11215860_060",
+        "score":0.634
+    },
+    {
+        "persona_id":"P02",
+        "cty_cd":"11215",
+        "dist_id":"11215780_020",
+        "score":0.619
     },
     {
         "persona_id":"P02",
         "cty_cd":"11215",
         "dist_id":"11215710_011",
-        "score":null
-    },
-    {
-        "persona_id":"P02",
-        "cty_cd":"11215",
-        "dist_id":"11215710_020",
-        "score":null
-    },
-    {
-        "persona_id":"P02",
-        "cty_cd":"11215",
-        "dist_id":"11215710_021",
-        "score":null
-    },
-    {
-        "persona_id":"P02",
-        "cty_cd":"11215",
-        "dist_id":"11215710_030",
-        "score":null
-    },
-    {
-        "persona_id":"P02",
-        "cty_cd":"11215",
-        "dist_id":"11215710_040",
-        "score":null
-    },
-    {
-        "persona_id":"P02",
-        "cty_cd":"11215",
-        "dist_id":"11215730_010",
-        "score":null
-    },
-    {
-        "persona_id":"P02",
-        "cty_cd":"11215",
-        "dist_id":"11215730_020",
-        "score":null
+        "score":0.615
     },
     {
         "persona_id":"P02",
         "cty_cd":"11215",
         "dist_id":"11215730_030",
-        "score":null
+        "score":0.615
     },
     {
         "persona_id":"P02",
         "cty_cd":"11215",
-        "dist_id":"11215730_040",
-        "score":null
+        "dist_id":"11215780_040",
+        "score":0.611
+    },
+    {
+        "persona_id":"P02",
+        "cty_cd":"11215",
+        "dist_id":"11215760_040",
+        "score":0.609
     },
     {
         "persona_id":"P03",
         "cty_cd":"11215",
-        "dist_id":"11215710_010",
-        "score":null
+        "dist_id":"11215860_031",
+        "score":0.689
     },
     {
         "persona_id":"P03",
         "cty_cd":"11215",
-        "dist_id":"11215710_011",
-        "score":null
+        "dist_id":"11215810_111",
+        "score":0.658
     },
     {
         "persona_id":"P03",
         "cty_cd":"11215",
-        "dist_id":"11215710_020",
-        "score":null
+        "dist_id":"11215730_050",
+        "score":0.572
     },
     {
         "persona_id":"P03",
         "cty_cd":"11215",
-        "dist_id":"11215710_021",
-        "score":null
+        "dist_id":"11215810_090",
+        "score":0.569
     },
     {
         "persona_id":"P03",
         "cty_cd":"11215",
-        "dist_id":"11215710_030",
-        "score":null
+        "dist_id":"11215870_030",
+        "score":0.568
     },
     {
         "persona_id":"P03",
         "cty_cd":"11215",
-        "dist_id":"11215710_040",
-        "score":null
+        "dist_id":"11215760_020",
+        "score":0.564
     },
     {
         "persona_id":"P03",
         "cty_cd":"11215",
-        "dist_id":"11215730_010",
-        "score":null
+        "dist_id":"11215760_010",
+        "score":0.56
     },
     {
         "persona_id":"P03",
         "cty_cd":"11215",
-        "dist_id":"11215730_020",
-        "score":null
+        "dist_id":"11215750_030",
+        "score":0.554
     },
     {
         "persona_id":"P03",
         "cty_cd":"11215",
-        "dist_id":"11215730_030",
-        "score":null
+        "dist_id":"11215780_030",
+        "score":0.554
     },
     {
         "persona_id":"P03",
         "cty_cd":"11215",
-        "dist_id":"11215730_040",
-        "score":null
-    },
-    {
-        "persona_id":"P04",
-        "cty_cd":"11215",
-        "dist_id":"11215710_010",
-        "score":null
-    },
-    {
-        "persona_id":"P04",
-        "cty_cd":"11215",
-        "dist_id":"11215710_011",
-        "score":null
-    },
-    {
-        "persona_id":"P04",
-        "cty_cd":"11215",
-        "dist_id":"11215710_020",
-        "score":null
-    },
-    {
-        "persona_id":"P04",
-        "cty_cd":"11215",
-        "dist_id":"11215710_021",
-        "score":null
+        "dist_id":"11215810_080",
+        "score":0.553
     },
     {
         "persona_id":"P04",
         "cty_cd":"11215",
         "dist_id":"11215710_030",
-        "score":null
+        "score":1.0
     },
     {
         "persona_id":"P04",
         "cty_cd":"11215",
-        "dist_id":"11215710_040",
-        "score":null
+        "dist_id":"11215760_060",
+        "score":0.973
     },
     {
         "persona_id":"P04",
         "cty_cd":"11215",
-        "dist_id":"11215730_010",
-        "score":null
+        "dist_id":"11215847_060",
+        "score":0.955
     },
     {
         "persona_id":"P04",
         "cty_cd":"11215",
-        "dist_id":"11215730_020",
-        "score":null
+        "dist_id":"11215770_012",
+        "score":0.723
     },
     {
         "persona_id":"P04",
         "cty_cd":"11215",
-        "dist_id":"11215730_030",
-        "score":null
+        "dist_id":"11215860_060",
+        "score":0.694
     },
     {
         "persona_id":"P04",
         "cty_cd":"11215",
-        "dist_id":"11215730_040",
-        "score":null
+        "dist_id":"11215810_060",
+        "score":0.693
+    },
+    {
+        "persona_id":"P04",
+        "cty_cd":"11215",
+        "dist_id":"11215870_030",
+        "score":0.681
+    },
+    {
+        "persona_id":"P04",
+        "cty_cd":"11215",
+        "dist_id":"11215770_040",
+        "score":0.675
+    },
+    {
+        "persona_id":"P04",
+        "cty_cd":"11215",
+        "dist_id":"11215840_060",
+        "score":0.67
+    },
+    {
+        "persona_id":"P04",
+        "cty_cd":"11215",
+        "dist_id":"11215750_020",
+        "score":0.669
     },
     {
         "persona_id":"P05",
         "cty_cd":"11215",
-        "dist_id":"11215710_010",
-        "score":null
+        "dist_id":"11215810_111",
+        "score":0.593
     },
     {
         "persona_id":"P05",
+        "cty_cd":"11215",
+        "dist_id":"11215810_040",
+        "score":0.589
+    },
+    {
+        "persona_id":"P05",
+        "cty_cd":"11215",
+        "dist_id":"11215860_031",
+        "score":0.581
+    },
+    {
+        "persona_id":"P05",
+        "cty_cd":"11215",
+        "dist_id":"11215810_020",
+        "score":0.568
+    },
+    {
+        "persona_id":"P05",
+        "cty_cd":"11215",
+        "dist_id":"11215780_020",
+        "score":0.563
+    },
+    {
+        "persona_id":"P05",
+        "cty_cd":"11215",
+        "dist_id":"11215860_020",
+        "score":0.561
+    },
+    {
+        "persona_id":"P05",
+        "cty_cd":"11215",
+        "dist_id":"11215760_020",
+        "score":0.546
+    },
+    {
+        "persona_id":"P05",
+        "cty_cd":"11215",
+        "dist_id":"11215770_021",
+        "score":0.539
+    },
+    {
+        "persona_id":"P05",
+        "cty_cd":"11215",
+        "dist_id":"11215810_112",
+        "score":0.537
+    },
+    {
+        "persona_id":"P05",
+        "cty_cd":"11215",
+        "dist_id":"11215830_070",
+        "score":0.533
+    },
+    {
+        "persona_id":"P06",
+        "cty_cd":"11215",
+        "dist_id":"11215860_060",
+        "score":0.761
+    },
+    {
+        "persona_id":"P06",
+        "cty_cd":"11215",
+        "dist_id":"11215847_060",
+        "score":0.741
+    },
+    {
+        "persona_id":"P06",
         "cty_cd":"11215",
         "dist_id":"11215710_011",
-        "score":null
+        "score":0.724
     },
     {
-        "persona_id":"P05",
+        "persona_id":"P06",
         "cty_cd":"11215",
-        "dist_id":"11215710_020",
-        "score":null
+        "dist_id":"11215740_030",
+        "score":0.71
     },
     {
-        "persona_id":"P05",
-        "cty_cd":"11215",
-        "dist_id":"11215710_021",
-        "score":null
-    },
-    {
-        "persona_id":"P05",
-        "cty_cd":"11215",
-        "dist_id":"11215710_030",
-        "score":null
-    },
-    {
-        "persona_id":"P05",
+        "persona_id":"P06",
         "cty_cd":"11215",
         "dist_id":"11215710_040",
-        "score":null
+        "score":0.701
     },
     {
-        "persona_id":"P05",
-        "cty_cd":"11215",
-        "dist_id":"11215730_010",
-        "score":null
-    },
-    {
-        "persona_id":"P05",
-        "cty_cd":"11215",
-        "dist_id":"11215730_020",
-        "score":null
-    },
-    {
-        "persona_id":"P05",
+        "persona_id":"P06",
         "cty_cd":"11215",
         "dist_id":"11215730_030",
-        "score":null
-    },
-    {
-        "persona_id":"P05",
-        "cty_cd":"11215",
-        "dist_id":"11215730_040",
-        "score":null
+        "score":0.699
     },
     {
         "persona_id":"P06",
         "cty_cd":"11215",
-        "dist_id":"11215710_010",
-        "score":null
+        "dist_id":"11215830_010",
+        "score":0.684
     },
     {
         "persona_id":"P06",
         "cty_cd":"11215",
-        "dist_id":"11215710_011",
-        "score":null
-    },
-    {
-        "persona_id":"P06",
-        "cty_cd":"11215",
-        "dist_id":"11215710_020",
-        "score":null
+        "dist_id":"11215750_020",
+        "score":0.668
     },
     {
         "persona_id":"P06",
         "cty_cd":"11215",
         "dist_id":"11215710_021",
-        "score":null
+        "score":0.664
     },
     {
         "persona_id":"P06",
         "cty_cd":"11215",
-        "dist_id":"11215710_030",
-        "score":null
-    },
-    {
-        "persona_id":"P06",
-        "cty_cd":"11215",
-        "dist_id":"11215710_040",
-        "score":null
-    },
-    {
-        "persona_id":"P06",
-        "cty_cd":"11215",
-        "dist_id":"11215730_010",
-        "score":null
-    },
-    {
-        "persona_id":"P06",
-        "cty_cd":"11215",
-        "dist_id":"11215730_020",
-        "score":null
-    },
-    {
-        "persona_id":"P06",
-        "cty_cd":"11215",
-        "dist_id":"11215730_030",
-        "score":null
-    },
-    {
-        "persona_id":"P06",
-        "cty_cd":"11215",
-        "dist_id":"11215730_040",
-        "score":null
-    },
-    {
-        "persona_id":"P07",
-        "cty_cd":"11215",
-        "dist_id":"11215710_010",
-        "score":null
-    },
-    {
-        "persona_id":"P07",
-        "cty_cd":"11215",
-        "dist_id":"11215710_011",
-        "score":null
-    },
-    {
-        "persona_id":"P07",
-        "cty_cd":"11215",
-        "dist_id":"11215710_020",
-        "score":null
+        "dist_id":"11215730_050",
+        "score":0.661
     },
     {
         "persona_id":"P07",
         "cty_cd":"11215",
         "dist_id":"11215710_021",
-        "score":null
+        "score":0.7
+    },
+    {
+        "persona_id":"P07",
+        "cty_cd":"11215",
+        "dist_id":"11215840_051",
+        "score":0.699
+    },
+    {
+        "persona_id":"P07",
+        "cty_cd":"11215",
+        "dist_id":"11215810_080",
+        "score":0.69
     },
     {
         "persona_id":"P07",
         "cty_cd":"11215",
         "dist_id":"11215710_030",
-        "score":null
-    },
-    {
-        "persona_id":"P07",
-        "cty_cd":"11215",
-        "dist_id":"11215710_040",
-        "score":null
-    },
-    {
-        "persona_id":"P07",
-        "cty_cd":"11215",
-        "dist_id":"11215730_010",
-        "score":null
-    },
-    {
-        "persona_id":"P07",
-        "cty_cd":"11215",
-        "dist_id":"11215730_020",
-        "score":null
+        "score":0.682
     },
     {
         "persona_id":"P07",
         "cty_cd":"11215",
         "dist_id":"11215730_030",
-        "score":null
+        "score":0.679
     },
     {
         "persona_id":"P07",
         "cty_cd":"11215",
-        "dist_id":"11215730_040",
-        "score":null
+        "dist_id":"11215847_030",
+        "score":0.666
     },
     {
-        "persona_id":"P08",
+        "persona_id":"P07",
         "cty_cd":"11215",
-        "dist_id":"11215710_010",
-        "score":null
+        "dist_id":"11215740_050",
+        "score":0.663
     },
     {
-        "persona_id":"P08",
-        "cty_cd":"11215",
-        "dist_id":"11215710_011",
-        "score":null
-    },
-    {
-        "persona_id":"P08",
+        "persona_id":"P07",
         "cty_cd":"11215",
         "dist_id":"11215710_020",
-        "score":null
+        "score":0.653
     },
     {
-        "persona_id":"P08",
+        "persona_id":"P07",
         "cty_cd":"11215",
-        "dist_id":"11215710_021",
-        "score":null
+        "dist_id":"11215740_020",
+        "score":0.651
     },
     {
-        "persona_id":"P08",
-        "cty_cd":"11215",
-        "dist_id":"11215710_030",
-        "score":null
-    },
-    {
-        "persona_id":"P08",
+        "persona_id":"P07",
         "cty_cd":"11215",
         "dist_id":"11215710_040",
-        "score":null
+        "score":0.643
     },
     {
         "persona_id":"P08",
         "cty_cd":"11215",
-        "dist_id":"11215730_010",
-        "score":null
+        "dist_id":"11215847_060",
+        "score":0.743
     },
     {
         "persona_id":"P08",
         "cty_cd":"11215",
         "dist_id":"11215730_020",
-        "score":null
+        "score":0.703
     },
     {
         "persona_id":"P08",
         "cty_cd":"11215",
-        "dist_id":"11215730_030",
-        "score":null
+        "dist_id":"11215870_030",
+        "score":0.699
     },
     {
         "persona_id":"P08",
         "cty_cd":"11215",
-        "dist_id":"11215730_040",
-        "score":null
+        "dist_id":"11215760_010",
+        "score":0.694
     },
     {
-        "persona_id":"P09",
+        "persona_id":"P08",
         "cty_cd":"11215",
-        "dist_id":"11215710_010",
-        "score":null
+        "dist_id":"11215830_010",
+        "score":0.641
     },
     {
-        "persona_id":"P09",
+        "persona_id":"P08",
         "cty_cd":"11215",
-        "dist_id":"11215710_011",
-        "score":null
+        "dist_id":"11215810_080",
+        "score":0.62
     },
     {
-        "persona_id":"P09",
-        "cty_cd":"11215",
-        "dist_id":"11215710_020",
-        "score":null
-    },
-    {
-        "persona_id":"P09",
-        "cty_cd":"11215",
-        "dist_id":"11215710_021",
-        "score":null
-    },
-    {
-        "persona_id":"P09",
-        "cty_cd":"11215",
-        "dist_id":"11215710_030",
-        "score":null
-    },
-    {
-        "persona_id":"P09",
+        "persona_id":"P08",
         "cty_cd":"11215",
         "dist_id":"11215710_040",
-        "score":null
+        "score":0.604
+    },
+    {
+        "persona_id":"P08",
+        "cty_cd":"11215",
+        "dist_id":"11215847_020",
+        "score":0.599
+    },
+    {
+        "persona_id":"P08",
+        "cty_cd":"11215",
+        "dist_id":"11215840_060",
+        "score":0.588
+    },
+    {
+        "persona_id":"P08",
+        "cty_cd":"11215",
+        "dist_id":"11215840_070",
+        "score":0.566
     },
     {
         "persona_id":"P09",
         "cty_cd":"11215",
-        "dist_id":"11215730_010",
-        "score":null
+        "dist_id":"11215810_112",
+        "score":0.649
     },
     {
         "persona_id":"P09",
         "cty_cd":"11215",
-        "dist_id":"11215730_020",
-        "score":null
+        "dist_id":"11215840_060",
+        "score":0.644
     },
     {
         "persona_id":"P09",
         "cty_cd":"11215",
-        "dist_id":"11215730_030",
-        "score":null
+        "dist_id":"11215810_111",
+        "score":0.639
     },
     {
         "persona_id":"P09",
         "cty_cd":"11215",
-        "dist_id":"11215730_040",
-        "score":null
+        "dist_id":"11215830_060",
+        "score":0.631
+    },
+    {
+        "persona_id":"P09",
+        "cty_cd":"11215",
+        "dist_id":"11215860_020",
+        "score":0.622
+    },
+    {
+        "persona_id":"P09",
+        "cty_cd":"11215",
+        "dist_id":"11215870_050",
+        "score":0.614
+    },
+    {
+        "persona_id":"P09",
+        "cty_cd":"11215",
+        "dist_id":"11215860_040",
+        "score":0.612
+    },
+    {
+        "persona_id":"P09",
+        "cty_cd":"11215",
+        "dist_id":"11215840_070",
+        "score":0.607
+    },
+    {
+        "persona_id":"P09",
+        "cty_cd":"11215",
+        "dist_id":"11215860_010",
+        "score":0.602
+    },
+    {
+        "persona_id":"P09",
+        "cty_cd":"11215",
+        "dist_id":"11215860_031",
+        "score":0.599
     },
     {
         "persona_id":"P10",
         "cty_cd":"11215",
-        "dist_id":"11215710_010",
-        "score":null
+        "dist_id":"11215847_060",
+        "score":0.711
     },
     {
         "persona_id":"P10",
         "cty_cd":"11215",
         "dist_id":"11215710_011",
-        "score":null
+        "score":0.685
+    },
+    {
+        "persona_id":"P10",
+        "cty_cd":"11215",
+        "dist_id":"11215830_010",
+        "score":0.679
+    },
+    {
+        "persona_id":"P10",
+        "cty_cd":"11215",
+        "dist_id":"11215860_060",
+        "score":0.661
     },
     {
         "persona_id":"P10",
         "cty_cd":"11215",
         "dist_id":"11215710_020",
-        "score":null
-    },
-    {
-        "persona_id":"P10",
-        "cty_cd":"11215",
-        "dist_id":"11215710_021",
-        "score":null
-    },
-    {
-        "persona_id":"P10",
-        "cty_cd":"11215",
-        "dist_id":"11215710_030",
-        "score":null
+        "score":0.656
     },
     {
         "persona_id":"P10",
         "cty_cd":"11215",
         "dist_id":"11215710_040",
-        "score":null
+        "score":0.651
     },
     {
         "persona_id":"P10",
         "cty_cd":"11215",
-        "dist_id":"11215730_010",
-        "score":null
+        "dist_id":"11215750_020",
+        "score":0.632
     },
     {
         "persona_id":"P10",
         "cty_cd":"11215",
-        "dist_id":"11215730_020",
-        "score":null
+        "dist_id":"11215740_030",
+        "score":0.627
     },
     {
         "persona_id":"P10",
         "cty_cd":"11215",
-        "dist_id":"11215730_030",
-        "score":null
+        "dist_id":"11215780_030",
+        "score":0.627
     },
     {
         "persona_id":"P10",
         "cty_cd":"11215",
-        "dist_id":"11215730_040",
-        "score":null
+        "dist_id":"11215710_030",
+        "score":0.625
     }
 ]
