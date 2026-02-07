@@ -956,7 +956,12 @@
                     label.textContent = cardConfig.label;
 
                     const value = document.createElement('strong');
-                    value.textContent = cardConfig.direction_map[row.direction] || row.direction;
+                    const directionMap = cardConfig.direction_map || cardConfig.directionMap || {};
+                    const mappedDirection = directionMap[row.direction];
+                    const mappedText = typeof mappedDirection === 'object' && mappedDirection !== null
+                        ? mappedDirection.text || mappedDirection.label || mappedDirection.value
+                        : mappedDirection;
+                    value.textContent = mappedText || row.direction;
 
                     const directionTagMap = cardConfig.tag_map || cardConfig.tagMap || {};
                     const tagMapping = cardConfig.tagging || cardConfig.tagging_map || {};
@@ -964,6 +969,9 @@
                     const tagColorMap = cardConfig.tag_color_map || cardConfig.tagColorMap || {};
 
                     let resolvedTag = directionTagMap[row.direction];
+                    if (!resolvedTag && typeof mappedDirection === 'object' && mappedDirection !== null) {
+                        resolvedTag = mappedDirection.tag || mappedDirection.sentiment || mappedDirection.type;
+                    }
                     if (!resolvedTag) {
                         const positiveTags = tagMapping.positive || tagMapping.긍정 || [];
                         const neutralTags = tagMapping.neutral || tagMapping.중립 || [];
