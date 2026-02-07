@@ -1,62 +1,168 @@
 {
+    "ui_theme": {
+        "tone_to_color": {
+            "positive": "violet",
+            "neutral": "gray"
+        }
+    },
     "price_level": {
         "label": "집값",
         "direction_map": {
-            "저렴": "저렴",
-            "보통": "보통",
-            "비싸도OK": "비싸도 OK"
+            "저렴": {
+                "text": "저렴",
+                "ui": {
+                    "tone": "positive"
+                }
+            },
+            "보통": {
+                "text": "보통",
+                "ui": {
+                    "tone": "neutral"
+                }
+            },
+            "비싸도OK": {
+                "text": "비싸도 OK",
+                "ui": {
+                    "tone": "neutral"
+                }
+            }
         }
     },
     "trade_activity": {
         "label": "거래량",
         "direction_map": {
-            "활발선호": "활발",
-            "상관없음": "상관 없음"
+            "활발선호": {
+                "text": "활발",
+                "ui": {
+                    "tone": "positive"
+                }
+            },
+            "상관없음": {
+                "text": "상관 없음",
+                "ui": {
+                    "tone": "neutral"
+                }
+            }
         }
     },
     "building_age": {
         "label": "집 상태",
         "direction_map": {
-            "신축": "신축",
-            "비교적신축": "비교적 신축",
-            "구옥": "구옥도 가능",
-            "상관없음": "상관 없음"
+            "신축": {
+                "text": "신축",
+                "ui": {
+                    "tone": "positive"
+                }
+            },
+            "비교적신축": {
+                "text": "비교적 신축",
+                "ui": {
+                    "tone": "positive"
+                }
+            },
+            "구옥": {
+                "text": "구옥도 가능",
+                "ui": {
+                    "tone": "neutral"
+                }
+            },
+            "상관없음": {
+                "text": "상관 없음",
+                "ui": {
+                    "tone": "neutral"
+                }
+            }
         }
     },
     "area_size": {
         "label": "집 크기",
         "direction_map": {
-            "넓게": "커야함",
-            "보통": "보통",
-            "작게": "작아도 OK"
+            "넓게": {
+                "text": "커야함",
+                "ui": {
+                    "tone": "positive"
+                }
+            },
+            "보통": {
+                "text": "보통",
+                "ui": {
+                    "tone": "neutral"
+                }
+            },
+            "작게": {
+                "text": "작아도 OK",
+                "ui": {
+                    "tone": "neutral"
+                }
+            }
         }
     },
     "parking": {
         "label": "주차",
         "direction_map": {
-            "세대당주차충분": "주차 여유",
-            "상관없음": "상관 없음"
+            "세대당주차충분": {
+                "text": "주차 여유",
+                "ui": {
+                    "tone": "positive"
+                }
+            },
+            "상관없음": {
+                "text": "상관 없음",
+                "ui": {
+                    "tone": "neutral"
+                }
+            }
         }
     },
     "high_floor": {
         "label": "층수",
         "direction_map": {
-            "20층이상선호": "고층 선호",
-            "상관없음": "상관 없음"
+            "20층이상선호": {
+                "text": "고층 선호",
+                "ui": {
+                    "tone": "positive"
+                }
+            },
+            "상관없음": {
+                "text": "상관 없음",
+                "ui": {
+                    "tone": "neutral"
+                }
+            }
         }
     },
     "bus_access": {
         "label": "버스정류장 거리",
         "direction_map": {
-            "가까움선호": "가까움",
-            "상관없음": "상관 없음"
+            "가까움선호": {
+                "text": "가까움",
+                "ui": {
+                    "tone": "positive"
+                }
+            },
+            "상관없음": {
+                "text": "상관 없음",
+                "ui": {
+                    "tone": "neutral"
+                }
+            }
         }
     },
     "subway_access": {
         "label": "지하철역 거리",
         "direction_map": {
-            "가까움선호": "가까움",
-            "상관없음": "상관 없음"
+            "가까움선호": {
+                "text": "가까움",
+                "ui": {
+                    "tone": "positive"
+                }
+            },
+            "상관없음": {
+                "text": "상관 없음",
+                "ui": {
+                    "tone": "neutral"
+                }
+            }
         }
     }
 }
