@@ -291,6 +291,28 @@
             align-self: stretch;
             height: auto;
             margin-top: 84px;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ranking-item>.map-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 18px;
+        }
+
+        .gps-marker {
+            position: absolute;
+            width: 28px !important;
+            height: 28px !important;
+            max-width: 28px;
+            max-height: 28px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
         }
 
         .ranking-card {
@@ -331,6 +353,7 @@
         .ranking-desc {
             color: var(--gray);
             font-size: 16px;
+            line-height: 1.6;
             margin-bottom: 4px;
         }
 
@@ -526,7 +549,7 @@
 
             .ranking-item>.map-placeholder {
                 margin-top: 20px;
-                height: 200px;
+                height: auto;
             }
         }
 
@@ -625,6 +648,7 @@
 
             .ranking-desc {
                 font-size: 14px;
+                line-height: 1.6;
             }
 
             .metrics {
@@ -653,7 +677,7 @@
 
             .ranking-item>.map-placeholder {
                 margin-top: 0;
-                height: 180px;
+                height: auto;
             }
 
             .bottom-banner {
@@ -753,6 +777,7 @@
 
             .ranking-desc {
                 font-size: 13px;
+                line-height: 1.6;
             }
 
             .metrics {
@@ -778,7 +803,7 @@
             }
 
             .ranking-item>.map-placeholder {
-                height: 150px;
+                height: auto;
                 border-radius: 14px;
             }
 
@@ -839,11 +864,12 @@
                     <strong class="gray">상관 없음</strong>
                 </div>
             </div>
-            <div class="cta-chip">더 많은 기준을 보고싶다면?</div>
+            <div class="cta-chip">더 많은 기준을 보고싶다면?( ※ 현재 서비스 준비중이에요! 조금만 기다려주세요. )</div>
         </section>
 
         <section class="section">
-            <div class="ranking-title">서울에서 추천하는 지역 TOP3</div>
+            <!-- 임시로 추천하는 지역 워딩을 변경 (기존 : 서울에서 추천하는 지역 TOP3), 추후 수정 필요 -->
+            <div class="ranking-title">선호 기반 추천 지역 TOP3</div>
             <div id="top3DistrictList">
                 <div class="ranking-card">
                     <div class="ranking-item">
@@ -868,7 +894,7 @@
 
         <section class="secondary-section">
             <div class="secondary-header">지역 이동이 가능하시다면..?</div>
-            <div class="secondary-sub">다음 지역도 검토해보세요!</div>
+            <div class="secondary-sub">다음 지역도 검토해보세요! ( ※ 현재 서비스 준비중이에요! 조금만 기다려주세요. )</div>
             <div id="secondaryDistrictList">
                 <div class="ranking-card">
                     <div class="ranking-item">
@@ -898,19 +924,185 @@
     </div>
 
     <script>
-        // URL 파라미터에서 personaId 가져오기
+        // URL 파라미터에서 personaId, trs_type, house_type 가져오기
         function getPersonaIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('personaId') || 'P01'; // 디폴트값: P01
         }
 
+        function getTrsTypeFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('trs_type') || '매매'; // 디폴트값: 매매
+        }
+
+        function getHouseTypeFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('house_type') || ''; // 디폴트값: 빈 문자열
+        }
+
+        // 탭 하이라이트 업데이트
+        function updateTabHighlight(trsType) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.textContent.trim() === trsType) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+
+        // house_type을 섹션 subtitle에 추가
+        function updateSectionSubtitle(houseType) {
+            const subtitle = document.querySelector('.section-subtitle');
+            if (subtitle && houseType) {
+                subtitle.textContent = `당신의 주거 선택 선호도는? | ${houseType}`;
+            }
+        }
+
+        // 전역 변수: 페르소나의 상위 4개 preference keys 저장
+        let personaTopPreferences = [];
+        let prefCardDataCache = null;
+        let districtScoreCache = null;
+        let markerPositionCache = null;
+
+        // 점수 범위에 따른 텍스트 및 색상 매핑
+        const scoreRanges = [
+            { min: 0.85, max: 1.00, text: '아주 좋음', color: 'violet' },
+            { min: 0.65, max: 0.85, text: '좋음', color: 'violet' },
+            { min: 0.35, max: 0.65, text: '보통', color: '' },
+            { min: 0.15, max: 0.35, text: '다소 나쁨', color: 'orange' },
+            { min: 0.00, max: 0.15, text: '나쁨', color: 'orange' }
+        ];
+
+        function getScoreLabel(score) {
+            if (score === null || score === undefined) return { text: '데이터 없음', color: '' };
+
+            for (const range of scoreRanges) {
+                if (score >= range.min && score < range.max) {
+                    return { text: range.text, color: range.color };
+                }
+                // 마지막 범위 (1.00 포함)
+                if (range.max === 1.00 && score === 1.00) {
+                    return { text: range.text, color: range.color };
+                }
+            }
+            return { text: '보통', color: '' };
+        }
+
+        // A_district_score.json 로드
+        async function loadDistrictScores() {
+            if (!districtScoreCache) {
+                try {
+                    const response = await fetch('Data/L2.A/A_district_score.json');
+                    if (!response.ok) {
+                        throw new Error('Failed to load district scores');
+                    }
+                    districtScoreCache = await response.json();
+                    console.log('District scores loaded:', districtScoreCache.length, 'entries');
+                } catch (error) {
+                    console.error('Error loading district scores:', error);
+                    districtScoreCache = [];
+                }
+            }
+            return districtScoreCache;
+        }
+
+        // district_marker_positions.json 로드
+        async function loadMarkerPositions() {
+            if (!markerPositionCache) {
+                try {
+                    const response = await fetch('Data/L2.A/district_marker_positions.json');
+                    if (!response.ok) {
+                        throw new Error('Failed to load marker positions');
+                    }
+                    markerPositionCache = await response.json();
+                    console.log('Marker positions loaded:', markerPositionCache.length, 'entries');
+                } catch (error) {
+                    console.error('Error loading marker positions:', error);
+                    markerPositionCache = [];
+                }
+            }
+            return markerPositionCache;
+        }
+
+        // 특정 dist_id에 대한 마커 위치 가져오기
+        function getMarkerPosition(distId) {
+            if (!markerPositionCache) return null;
+            return markerPositionCache.find(item => item.dist_id === distId);
+        }
+
+        // 특정 persona_id와 dist_id에 대한 점수 가져오기
+        function getDistrictScore(personaId, distId) {
+            if (!districtScoreCache) return null;
+            return districtScoreCache.find(item =>
+                item.persona_id === personaId && item.dist_id === distId
+            );
+        }
+
+        // 상위 3개 preference 선택 (점수 기반, price_level이 4등이면 3번째로)
+        function selectTop3Preferences(scoreData, top4PreferenceKeys) {
+            const allScores = [];
+
+            // top 4 preference keys 중에서 점수가 있는 항목들을 수집
+            for (const prefKey of top4PreferenceKeys) {
+                const score = scoreData[prefKey];
+                if (score !== null && score !== undefined) {
+                    allScores.push({ key: prefKey, score: score });
+                }
+            }
+
+            // 점수 내림차순 정렬
+            allScores.sort((a, b) => b.score - a.score);
+
+            // price_level의 순위 확인
+            const priceLevelIndex = allScores.findIndex(item => item.key === 'price_level');
+
+            // price_level이 없으면 상위 3개 반환
+            if (priceLevelIndex === -1) {
+                return allScores.slice(0, 3);
+            }
+
+            // price_level이 1~3등(인덱스 0~2)이면 상위 3개 그대로 반환
+            if (priceLevelIndex < 3) {
+                return allScores.slice(0, 3);
+            }
+
+            // price_level이 4등(인덱스 3)이면 1등, 2등, price_level 반환
+            if (priceLevelIndex === 3) {
+                return [allScores[0], allScores[1], allScores[3]];
+            }
+
+            // 그 외 경우 상위 3개 반환
+            return allScores.slice(0, 3);
+        }
+
         function parseCsv(text) {
             const lines = text.trim().split(/\r?\n/);
             const headers = lines.shift().split(',').map(header => header.replace(/^\uFEFF/, '').trim());
+
             return lines.map(line => {
-                const values = line.split(',');
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+
+                // 따옴표로 감싼 필드를 올바르게 처리
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                values.push(current.trim()); // 마지막 값 추가
+
+                // 헤더와 값을 매핑
                 return headers.reduce((acc, header, index) => {
-                    acc[header] = values[index] ? values[index].trim() : '';
+                    acc[header] = values[index] ? values[index].replace(/^"|"$/g, '').trim() : '';
                     return acc;
                 }, {});
             });
@@ -928,6 +1120,8 @@
                 }
 
                 const prefCardData = await cardResponse.json();
+                prefCardDataCache = prefCardData; // 캐시에 저장
+
                 const csvText = await csvResponse.text();
                 const rows = parseCsv(csvText)
                     .filter(row => row.persona_id === personaId)
@@ -941,6 +1135,11 @@
                     .sort((a, b) => b.priority - a.priority);
 
                 const topRows = sortedRows.slice(0, 4);
+
+                // 상위 4개 preference keys 저장
+                personaTopPreferences = topRows.map(row => row.preference_key);
+                console.log('Top 4 preference keys:', personaTopPreferences);
+
                 const patternGrid = document.getElementById('personaPatternGrid');
                 if (!patternGrid || topRows.length === 0) {
                     return;
@@ -956,31 +1155,27 @@
                     label.textContent = cardConfig.label;
 
                     const value = document.createElement('strong');
-                    value.textContent = cardConfig.direction_map[row.direction] || row.direction;
-
-                    const directionTagMap = cardConfig.tag_map || cardConfig.tagMap || {};
-                    const tagMapping = cardConfig.tagging || cardConfig.tagging_map || {};
-                    const colorMap = cardConfig.color_map || cardConfig.colorMap || cardConfig.color || {};
-                    const tagColorMap = cardConfig.tag_color_map || cardConfig.tagColorMap || {};
-
-                    let resolvedTag = directionTagMap[row.direction];
-                    if (!resolvedTag) {
-                        const positiveTags = tagMapping.positive || tagMapping.긍정 || [];
-                        const neutralTags = tagMapping.neutral || tagMapping.중립 || [];
-                        if (Array.isArray(positiveTags) && positiveTags.includes(row.direction)) {
-                            resolvedTag = 'positive';
-                        } else if (Array.isArray(neutralTags) && neutralTags.includes(row.direction)) {
-                            resolvedTag = 'neutral';
-                        }
+                    // direction_map의 값이 객체인 경우 .text 속성을 가져옴
+                    const directionData = cardConfig.direction_map[row.direction];
+                    if (typeof directionData === 'object' && directionData !== null) {
+                        value.textContent = directionData.text || row.direction;
+                    } else {
+                        value.textContent = directionData || row.direction;
                     }
 
-                    const configuredColor = colorMap[row.direction]
-                        || (resolvedTag ? colorMap[resolvedTag] || tagColorMap[resolvedTag] : undefined)
-                        || colorMap.default
-                        || tagColorMap.default;
+                    // tone 기반 색상 설정
+                    const toneToColor = prefCardData.ui_theme?.tone_to_color || { positive: 'violet', neutral: 'gray' };
+                    const tone = directionData?.ui?.tone;
 
-                    if (configuredColor) {
-                        value.style.color = configuredColor;
+                    if (tone && toneToColor[tone]) {
+                        const cssClass = toneToColor[tone];
+                        if (cssClass === 'violet') {
+                            value.className = 'violet';
+                        } else if (cssClass === 'gray') {
+                            value.className = 'gray';
+                        } else {
+                            value.style.color = cssClass;
+                        }
                     } else {
                         value.className = row.direction === '상관없음' ? 'gray' : 'violet';
                     }
@@ -994,30 +1189,157 @@
             }
         }
 
-        function createDistrictCard({ label, distId }) {
+        async function createDistrictCard({ label, distId, personaId }) {
             const card = document.createElement('div');
             card.className = 'ranking-card';
+
+            // dist_id에서 행정동 코드 추출 (언더스코어 앞부분)
+            const admCode = distId.split('_')[0];
+            const mapImagePath = `Data/L2.A/A_KeyMap/${admCode}_map.png`;
+
+            // CSV 데이터 로드하여 구역 이름과 설명 가져오기
+            let distName = distId;
+            let distDesc = '추천 구역 ID';
+
+            // await를 사용하여 구역 정보를 먼저 가져옴
+            const distInfo = await getDistrictInfo(distId);
+            if (distInfo) {
+                distName = distInfo.dist_nm || distId;
+                distDesc = distInfo.dist_desc || '추천 구역 ID';
+                console.log('Using district info:', { distName, distDesc });
+            } else {
+                console.warn('No district info found for:', distId);
+            }
+
+            // 마커 위치 데이터 로드
+            await loadMarkerPositions();
+            const markerPos = getMarkerPosition(distId);
+            let markerHtml = '';
+
+            if (markerPos) {
+                const leftPct = markerPos.m_left_pct;
+                const topPct = markerPos.m_top_pct;
+                markerHtml = `<img src="Source/gps_marker.svg" class="gps-marker" style="left: ${leftPct}%; top: ${topPct}%;" alt="Location Marker">`;
+                console.log('Marker position for', distId, ':', leftPct, topPct);
+            } else {
+                console.warn('No marker position found for:', distId);
+            }
+
+            // metric-chip 동적 생성
+            let metricsHtml = '';
+
+            if (personaTopPreferences.length > 0 && prefCardDataCache) {
+                // 구역 점수 데이터 가져오기
+                await loadDistrictScores();
+                const scoreData = getDistrictScore(personaId, distId);
+
+                if (scoreData) {
+                    // 상위 3개 preference 선택
+                    const top3 = selectTop3Preferences(scoreData, personaTopPreferences);
+                    console.log('Top 3 preferences for', distId, ':', top3);
+
+                    metricsHtml = top3.map(item => {
+                        const prefConfig = prefCardDataCache[item.key];
+                        const scoreLabel = getScoreLabel(item.score);
+                        const colorClass = scoreLabel.color || '';
+
+                        return `<div class="metric-chip ${colorClass}">${prefConfig.label}<strong>${scoreLabel.text}</strong></div>`;
+                    }).join('');
+                } else {
+                    // 데이터가 없을 경우 기본 3개 표시
+                    console.warn('No score data for:', personaId, distId);
+                    metricsHtml = personaTopPreferences.slice(0, 3).map(key => {
+                        const prefConfig = prefCardDataCache[key];
+                        return `<div class="metric-chip">${prefConfig.label}<strong>데이터 없음</strong></div>`;
+                    }).join('');
+                }
+            } else {
+                // fallback: 기본 metric-chip
+                metricsHtml = `
+                    <div class="metric-chip violet">지하철역 접근성<strong>최고</strong></div>
+                    <div class="metric-chip">주민 노후도<strong>적정</strong></div>
+                    <div class="metric-chip orange">주택 가격<strong>다소 비쌈</strong></div>
+                `;
+            }
 
             card.innerHTML = `
                 <div class="ranking-item">
                     <span class="ranking-label">${label}</span>
                     <div>
                         <div class="ranking-header">
-                            <span class="ranking-name">${distId}</span>
+                            <span class="ranking-name">${distName}</span>
                         </div>
-                        <div class="ranking-desc">추천 구역 ID</div>
+                        <div class="ranking-desc">${distDesc}</div>
                         <div class="metrics">
-                            <div class="metric-chip violet">지하철역 접근성<strong>최고</strong></div>
-                            <div class="metric-chip">주민 노후도<strong>적정</strong></div>
-                            <div class="metric-chip orange">주택 가격<strong>다소 비쌈</strong></div>
+                            ${metricsHtml}
                         </div>
                         <a href="#" class="cta-button">영상으로 살펴보기</a>
                     </div>
-                    <div class="map-placeholder">MAP PREVIEW</div>
+                    <div class="map-placeholder">
+                        <img src="${mapImagePath}" alt="Map">
+                        ${markerHtml}
+                    </div>
                 </div>
             `;
 
             return card;
+        }
+
+        // CSV 캐시 (시군구별로 저장)
+        let districtCsvCache = {};
+
+        // CSV 파일에서 구역 정보 가져오기
+        async function getDistrictInfo(distId) {
+            try {
+                console.log('=== getDistrictInfo called with distId:', distId);
+
+                // 구역 ID에서 시군구 코드 추출 (앞 5자리)
+                const ctyCode = distId.substring(0, 5);
+                console.log('Extracted ctyCode:', ctyCode);
+
+                // 해당 시군구의 CSV가 캐시에 없으면 로드
+                if (!districtCsvCache[ctyCode]) {
+                    // feed-a.html은 Web 폴더에 있고, Data 폴더도 Web 안에 있음
+                    const csvPath = `Data/District/${ctyCode}_dist_nm_desc.csv`;
+                    console.log('Loading district CSV from:', csvPath);
+
+                    const response = await fetch(csvPath);
+                    console.log('Fetch response status:', response.status, response.ok);
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to load district CSV: ${csvPath} (Status: ${response.status})`);
+                    }
+
+                    const csvText = await response.text();
+                    console.log('CSV text length:', csvText.length);
+                    console.log('CSV first 200 chars:', csvText.substring(0, 200));
+
+                    districtCsvCache[ctyCode] = parseCsv(csvText);
+                    console.log('CSV parsed successfully for:', ctyCode, 'rows:', districtCsvCache[ctyCode].length);
+                    console.log('First row:', districtCsvCache[ctyCode][0]);
+                    console.log('All dist_ids:', districtCsvCache[ctyCode].map(r => r.dist_id).slice(0, 10));
+                }
+
+                console.log('Looking for dist_id:', distId, 'in cache');
+                const distInfo = districtCsvCache[ctyCode].find(row => {
+                    const matches = row.dist_id === distId;
+                    if (!matches) {
+                        console.log('  Comparing:', row.dist_id, '!=', distId);
+                    }
+                    return matches;
+                });
+
+                if (distInfo) {
+                    console.log('*** Found district info:', distInfo);
+                } else {
+                    console.warn('*** No match found for dist_id:', distId);
+                    console.log('Available dist_ids:', districtCsvCache[ctyCode].map(r => r.dist_id));
+                }
+                return distInfo;
+            } catch (error) {
+                console.error('!!! Error in getDistrictInfo:', error);
+                return null;
+            }
         }
 
         async function loadRecommendDistricts(personaId) {
@@ -1038,20 +1360,26 @@
 
                 if (top3Container) {
                     top3Container.innerHTML = '';
-                    personaDistricts.slice(0, 3).forEach((entry, index) => {
-                        top3Container.appendChild(
-                            createDistrictCard({ label: `TOP ${index + 1}`, distId: entry.dist_id })
-                        );
-                    });
+                    for (let i = 0; i < Math.min(3, personaDistricts.length); i++) {
+                        const card = await createDistrictCard({
+                            label: `TOP ${i + 1}`,
+                            distId: personaDistricts[i].dist_id,
+                            personaId: personaId
+                        });
+                        top3Container.appendChild(card);
+                    }
                 }
 
                 if (secondaryContainer) {
                     secondaryContainer.innerHTML = '';
-                    personaDistricts.slice(3, 5).forEach(entry => {
-                        secondaryContainer.appendChild(
-                            createDistrictCard({ label: '근거리', distId: entry.dist_id })
-                        );
-                    });
+                    for (let i = 3; i < Math.min(5, personaDistricts.length); i++) {
+                        const card = await createDistrictCard({
+                            label: '근거리',
+                            distId: personaDistricts[i].dist_id,
+                            personaId: personaId
+                        });
+                        secondaryContainer.appendChild(card);
+                    }
                 }
             } catch (error) {
                 console.error('Error loading district data:', error);
@@ -1062,7 +1390,16 @@
         async function loadPersonaData() {
             try {
                 const personaId = getPersonaIdFromUrl();
-                console.log('Loading persona:', personaId);
+                const trsType = getTrsTypeFromUrl();
+                const houseType = getHouseTypeFromUrl();
+
+                console.log('Loading persona:', personaId, 'trs_type:', trsType, 'house_type:', houseType);
+
+                // 탭 하이라이트 업데이트
+                updateTabHighlight(trsType);
+
+                // house_type 표시
+                updateSectionSubtitle(houseType);
 
                 // JSON 파일 로드
                 const response = await fetch('Source/Feed_A_Persona_Pref.json');

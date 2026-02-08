@@ -46,7 +46,7 @@
         }
     },
     "building_age": {
-        "label": "집 상태",
+        "label": "집 상태 (노후도)",
         "direction_map": {
             "신축": {
                 "text": "신축",

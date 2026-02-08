@@ -389,8 +389,30 @@
 
         function selectPersona(personaId) {
             console.log(`페르소나 ${personaId} 선택됨`);
-            // feed-a.html로 페르소나 ID를 파라미터로 전달하여 이동
-            window.location.href = `feed-a.html?personaId=${personaId}`;
+
+            // 페르소나 ID로 해당 페르소나 객체 찾기
+            const personaCards = document.querySelectorAll('.persona-card');
+            let trsType = '';
+            let houseType = '';
+
+            // 현재 페르소나의 type 값 찾기 (페이지에서 렌더링된 데이터 이용)
+            personaCards.forEach(card => {
+                const button = card.querySelector('.select-button');
+                if (button && button.getAttribute('onclick').includes(personaId)) {
+                    const typeElement = card.querySelector('.persona-type');
+                    if (typeElement) {
+                        const typeText = typeElement.textContent.trim();
+                        const parts = typeText.split('|').map(p => p.trim());
+                        if (parts.length === 2) {
+                            trsType = parts[0]; // "월세", "전세", "매매"
+                            houseType = parts[1]; // "오피스텔", "아파트", "다세대"
+                        }
+                    }
+                }
+            });
+
+            // feed-a.html로 페르소나 ID와 함께 trs_type, house_type 파라미터로 전달하여 이동
+            window.location.href = `feed-a.html?personaId=${personaId}&trs_type=${encodeURIComponent(trsType)}&house_type=${encodeURIComponent(houseType)}`;
         }
 
         // 스크롤 애니메이션 설정
