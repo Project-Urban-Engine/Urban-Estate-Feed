@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed C - Urban Engine</title>
+    <style>
+        /* Feed A 기준 토큰/브레이크포인트 재활용 */
+        @font-face {
+            font-family: 'esamanruLight';
+            src: url('Source/Fonts/esamanru Light.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'esamanruMedium';
+            src: url('Source/Fonts/esamanru Medium.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --violet: #6f41b0;
+            --gray: #808080;
+            --light-gray: #b3b3b3;
+            --black: #111111;
+            --white: #f9f9f9;
+            --orange: #f7931e;
+            --bg: #f6f7f9;
+
+            --pink: #f47db3;
+            --blue: #5aa7ff;
+            --danger: #ff6b6b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'esamanruLight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--black);
+        }
+
+        .page {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 50px 50px 80px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 24px;
+            color: var(--black);
+        }
+
+        .hero {
+            margin-top: 24px;
+            margin-bottom: 90px;
+        }
+
+        .hero small {
+            display: block;
+            color: var(--gray);
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 44px;
+            line-height: 1.25;
+            color: var(--violet);
+        }
+
+        .block {
+            margin-bottom: 42px;
+            text-align: center;
+        }
+
+        .block-title {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 38px;
+            margin-bottom: 8px;
+        }
+
+        .block-sub {
+            font-size: 24px;
+            color: var(--gray);
+        }
+
+        .divider-title {
+            margin: 78px 0 24px;
+            text-align: center;
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 38px;
+            color: var(--violet);
+        }
+
+        .divider-title.warning {
+            color: var(--danger);
+        }
+
+        .group {
+            display: grid;
+            gap: 40px;
+        }
+
+        .metric-title {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 38px;
+            margin-bottom: 6px;
+        }
+
+        .metric-sub {
+            font-size: 24px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .scale {
+            position: relative;
+            margin-top: 16px;
+            padding: 48px 0 44px;
+        }
+
+        .scale-bar {
+            height: 20px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--pink) 0%, var(--blue) 100%);
+        }
+
+        .marker {
+            position: absolute;
+            transform: translateX(-50%);
+            font-size: 24px;
+            color: var(--gray);
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .marker.top {
+            top: 0;
+        }
+
+        .marker.bottom {
+            bottom: 0;
+        }
+
+        .marker.value::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+        }
+
+        .marker.top.value::after {
+            top: 34px;
+            border-top: 14px solid #444;
+        }
+
+        .marker.bottom.value::after {
+            bottom: 34px;
+            border-bottom: 14px solid #444;
+        }
+
+        .marker.target {
+            color: var(--violet);
+            font-family: 'esamanruMedium', sans-serif;
+        }
+
+        .marker.target.bottom.value::after,
+        .marker.target.top.value::after {
+            border-top-color: var(--violet);
+            border-bottom-color: var(--violet);
+        }
+
+        .legend-left {
+            left: 0%;
+            transform: none;
+            text-align: left;
+        }
+
+        .legend-right {
+            left: 100%;
+            transform: translateX(-100%);
+            text-align: right;
+        }
+
+        .map-section {
+            margin-top: 88px;
+            text-align: center;
+        }
+
+        .map-section h3 {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 38px;
+            margin-bottom: 8px;
+        }
+
+        .map-section p {
+            font-size: 24px;
+            color: var(--gray);
+            margin-bottom: 24px;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 28px;
+            background: #d9d9e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9c9c9c;
+            font-size: 24px;
+        }
+
+        /* 태블릿 */
+        @media (max-width: 960px) {
+            .page {
+                padding: 40px 30px 70px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .hero small,
+            .block-sub,
+            .metric-sub,
+            .map-section p,
+            .marker {
+                font-size: 20px;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .block-title,
+            .divider-title,
+            .metric-title,
+            .map-section h3 {
+                font-size: 34px;
+            }
+
+            .scale-bar {
+                height: 18px;
+            }
+        }
+
+        /* 모바일 */
+        @media (max-width: 768px) {
+            .page {
+                max-width: 420px;
+                padding: 24px 20px 60px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .hero {
+                margin-top: 10px;
+                margin-bottom: 46px;
+            }
+
+            .hero small {
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .block-title,
+            .metric-title,
+            .map-section h3 {
+                font-size: 28px;
+            }
+
+            .block-sub,
+            .metric-sub,
+            .map-section p {
+                font-size: 18px;
+            }
+
+            .divider-title {
+                font-size: 24px;
+                margin: 56px 0 18px;
+            }
+
+            .group {
+                gap: 30px;
+            }
+
+            .scale {
+                padding: 34px 0 30px;
+            }
+
+            .scale-bar {
+                height: 12px;
+            }
+
+            .marker {
+                font-size: 16px;
+            }
+
+            .marker.value::after {
+                border-left-width: 6px;
+                border-right-width: 6px;
+            }
+
+            .marker.top.value::after {
+                top: 22px;
+                border-top-width: 9px;
+            }
+
+            .marker.bottom.value::after {
+                bottom: 22px;
+                border-bottom-width: 9px;
+            }
+
+            .map-section {
+                margin-top: 62px;
+            }
+
+            .map-placeholder {
+                border-radius: 18px;
+                font-size: 14px;
+            }
+        }
+
+        /* 작은 모바일 */
+        @media (max-width: 480px) {
+            .page {
+                padding: 20px 16px 50px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .hero h1 {
+                font-size: 26px;
+            }
+
+            .block-title,
+            .metric-title,
+            .map-section h3 {
+                font-size: 24px;
+            }
+
+            .block-sub,
+            .metric-sub,
+            .map-section p {
+                font-size: 16px;
+            }
+
+            .divider-title {
+                font-size: 20px;
+            }
+
+            .marker {
+                font-size: 13px;
+            }
+
+            .scale {
+                padding: 30px 0 26px;
+            }
+
+            .scale-bar {
+                height: 10px;
+            }
+
+            .marker.top.value::after {
+                top: 18px;
+                border-top-width: 6px;
+            }
+
+            .marker.bottom.value::after {
+                bottom: 18px;
+                border-bottom-width: 6px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header>
+            <div class="logo">Urban Engine</div>
+        </header>
+
+        <section class="hero">
+            <small>서울시 광진구 자양동</small>
+            <h1>자양로 2길 일대</h1>
+        </section>
+
+        <section class="block">
+            <div class="block-title">이 지역의 가격은?</div>
+            <div class="block-sub">최상 | 상위 5%</div>
+            <div class="scale">
+                <div class="marker top value" style="left:26%;">광진구 평균</div>
+                <div class="marker top legend-right">좋음</div>
+                <div class="scale-bar"></div>
+                <div class="marker bottom value" style="left:22%;">서울시 평균</div>
+                <div class="marker bottom value target" style="left:74%;">대상지역</div>
+            </div>
+        </section>
+
+        <div class="divider-title">왜 이 지역이 좋은가요?</div>
+
+        <div class="group">
+            <section class="block">
+                <div class="metric-title">지하철역과 거리</div>
+                <div class="metric-sub">최상 | 상위 5%</div>
+                <div class="scale">
+                    <div class="marker top value" style="left:32%;">광진구 평균</div>
+                    <div class="marker top legend-right">좋음</div>
+                    <div class="scale-bar"></div>
+                    <div class="marker bottom value" style="left:24%;">서울시 평균</div>
+                    <div class="marker bottom value target" style="left:74%;">대상지역</div>
+                </div>
+            </section>
+
+            <section class="block">
+                <div class="metric-title">지하철역과 거리</div>
+                <div class="metric-sub">최상 | 상위 5%</div>
+                <div class="scale">
+                    <div class="marker top value" style="left:30%;">광진구 평균</div>
+                    <div class="marker top legend-right">좋음</div>
+                    <div class="scale-bar"></div>
+                    <div class="marker bottom value" style="left:21%;">서울시 평균</div>
+                    <div class="marker bottom value target" style="left:73%;">대상지역</div>
+                </div>
+            </section>
+
+            <section class="block">
+                <div class="metric-title">지하철역과 거리</div>
+                <div class="metric-sub">최상 | 상위 5%</div>
+                <div class="scale">
+                    <div class="marker top value" style="left:29%;">광진구 평균</div>
+                    <div class="marker top legend-right">좋음</div>
+                    <div class="scale-bar"></div>
+                    <div class="marker bottom value" style="left:22%;">서울시 평균</div>
+                    <div class="marker bottom value target" style="left:72%;">대상지역</div>
+                </div>
+            </section>
+        </div>
+
+        <div class="divider-title warning">어떤 점을 고려해야 하나요?</div>
+
+        <div class="group">
+            <section class="block">
+                <div class="metric-title">다소 비싼 가격</div>
+                <div class="metric-sub">최하 | 하위 15%</div>
+                <div class="scale">
+                    <div class="marker top value target" style="left:14%;">대상지역</div>
+                    <div class="marker top value" style="left:45%;">광진구 평균</div>
+                    <div class="scale-bar"></div>
+                    <div class="marker bottom legend-left">비쌈</div>
+                    <div class="marker bottom value" style="left:36%;">서울시 평균</div>
+                </div>
+            </section>
+
+            <section class="block">
+                <div class="metric-title">다소 비싼 가격</div>
+                <div class="metric-sub">최하 | 하위 15%</div>
+                <div class="scale">
+                    <div class="marker top value target" style="left:13%;">대상지역</div>
+                    <div class="marker top value" style="left:48%;">광진구 평균</div>
+                    <div class="scale-bar"></div>
+                    <div class="marker bottom legend-left">비쌈</div>
+                    <div class="marker bottom value" style="left:37%;">서울시 평균</div>
+                </div>
+            </section>
+
+            <section class="block">
+                <div class="metric-title">다소 비싼 가격</div>
+                <div class="metric-sub">최하 | 하위 15%</div>
+                <div class="scale">
+                    <div class="marker top value target" style="left:12%;">대상지역</div>
+                    <div class="marker top value" style="left:44%;">광진구 평균</div>
+                    <div class="scale-bar"></div>
+                    <div class="marker bottom legend-left">비쌈</div>
+                    <div class="marker bottom value" style="left:35%;">서울시 평균</div>
+                </div>
+            </section>
+        </div>
+
+        <section class="map-section">
+            <h3>세부 구역 정보가 더 궁금하다면?</h3>
+            <p>아래 구역을 눌러보세요!</p>
+            <div class="map-placeholder">지도 영역 (1:1 비율)</div>
+        </section>
+    </div>
+</body>
+
+</html>
