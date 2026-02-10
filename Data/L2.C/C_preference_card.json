@@ -1,0 +1,90 @@
+{
+    "price_level": {
+        "label": "집값",
+        "card_title": {
+            "positive": "합리적 가격",
+            "negative": "다소 비싼 가격"
+        },
+        "bar_legend": {
+            "left": "비쌈",
+            "right": "저렴"
+        }
+    },
+    "trade_activity": {
+        "label": "거래량",
+        "card_title": {
+            "positive": "거래 활발",
+            "negative": "거래 저조"
+        },
+        "bar_legend": {
+            "left": "적음",
+            "right": "많음"
+        }
+    },
+    "building_age": {
+        "label": "집 상태 (노후도)",
+        "card_title": {
+            "positive": "신축·양호",
+            "negative": "노후 가능"
+        },
+        "bar_legend": { 
+            "left": "노후",
+            "right": "신축"
+        }
+    },
+    "area_size": {
+        "label": "집 크기",
+        "card_title": {
+            "positive": "넓은 평형",
+            "negative": "소형 위주"
+        },
+        "bar_legend": {
+            "left": "작음",
+            "right": "큼"
+        }
+    },
+    "parking": {
+        "label": "주차",
+        "card_title": {
+            "positive": "주차 여유",
+            "negative": "주차 불편"
+        },
+        "bar_legend": {
+            "left": "부족",
+            "right": "여유"
+        }
+    },
+    "high_floor": {
+        "label": "층수",
+        "card_title": {
+            "positive": "고층 비중",
+            "negative": "저층 위주"
+        },
+        "bar_legend": {
+            "left": "저층",
+            "right": "고층"
+        }
+    },
+    "bus_access": {
+        "label": "버스정류장 거리",
+        "card_title": {
+            "positive": "주요 버스노선 접근성",
+            "negative": "주요 버스노선 접근 불리"
+        },
+        "bar_legend": {
+            "left": "멂",
+            "right": "가까움"
+        }
+    },
+    "subway_access": {
+        "label": "지하철역 거리",
+        "card_title": {
+            "positive": "지하철 접근성 좋음",
+            "negative": "지하철 접근 불리"
+        },
+        "bar_legend": {
+            "left": "멂",
+            "right": "가까움"
+        }
+    }
+}
