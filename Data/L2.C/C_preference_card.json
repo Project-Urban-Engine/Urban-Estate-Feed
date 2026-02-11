@@ -24,12 +24,12 @@
     "building_age": {
         "label": "집 상태 (노후도)",
         "card_title": {
-            "positive": "신축·양호",
-            "negative": "노후 가능"
+            "positive": "신축 건물 많음",
+            "negative": "신축 건물 적음"
         },
-        "bar_legend": { 
-            "left": "노후",
-            "right": "신축"
+        "bar_legend": {
+            "left": "신축 적음",
+            "right": "신축 많음"
         }
     },
     "area_size": {
@@ -57,7 +57,7 @@
     "high_floor": {
         "label": "층수",
         "card_title": {
-            "positive": "고층 비중",
+            "positive": "고층 비중 높음",
             "negative": "저층 위주"
         },
         "bar_legend": {
@@ -68,7 +68,7 @@
     "bus_access": {
         "label": "버스정류장 거리",
         "card_title": {
-            "positive": "주요 버스노선 접근성",
+            "positive": "주요 버스노선 접근성 좋음",
             "negative": "주요 버스노선 접근 불리"
         },
         "bar_legend": {

@@ -1,0 +1,16 @@
+{
+    "htype": { // HTYPE은 JSON에 상위 KEY로 표현되는 변수들
+        "price_level": "price",
+        "trade_activity": "cnt_trade",
+        "area_size": "area_avg"
+    },
+    "htype_str": { // HTYPE : HS/HA/HM/HO와 같이 String으로 표현되는 변수들
+        "parking": "D01_HTYPE_park_per_house_avg",
+        "high_floor": "D02_HTYPE_high_floor_ratio",
+        "building_age": "D02_HTYPE_new_house10_ratio"
+    },
+    "dist": { // HTYPE과 관계 없이, DISTRICT의 고유한 변수들
+        "bus_access": "F03_acc_bus_cent_near",
+        "subway_access": "F03_acc_subway_near"
+    }
+}
