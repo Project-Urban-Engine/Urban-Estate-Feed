@@ -181,7 +181,18 @@
             font-size: 24px;
             color: var(--gray);
             line-height: 1;
+        }
+
+        .marker-label {
+            display: inline-block;
             white-space: nowrap;
+            transform: translateX(var(--label-shift, 0px));
+            transition: transform 0.2s ease;
+        }
+
+        .marker.legend-left .marker-label,
+        .marker.legend-right .marker-label {
+            /* 범례는 추가 스타일 없음 */
         }
 
         .marker.top {
@@ -767,7 +778,7 @@
             const distData = prosConsDist[distId];
             if (!distData) return null;
 
-            let targetValue, entValue;
+            let targetValue, entValue, ctyValue;
 
             // htype 변수 (pros_cons_htype에서 가져오기)
             if (preferenceVariables.htype[varKey]) {
@@ -778,6 +789,7 @@
                 const data = htypeData[personaTrsType][personaHouseType];
                 targetValue = data[varConfig + '_pos'];
                 entValue = data['ent_' + varConfig + '_pos'];
+                ctyValue = data['cty_' + varConfig + '_pos'];
             }
             // htype_str 또는 dist 변수 (pros_cons_dist에서 가져오기)
             else {
@@ -790,11 +802,12 @@
 
                 targetValue = distData[fullVarName + '_pos'];
                 entValue = distData['ent_' + fullVarName + '_pos'];
+                ctyValue = distData['cty_' + fullVarName + '_pos'];
             }
 
             // NaN 체크
-            if (targetValue === null || entValue === null ||
-                isNaN(targetValue) || isNaN(entValue)) {
+            if (targetValue === null || entValue === null || ctyValue === null ||
+                isNaN(targetValue) || isNaN(entValue) || isNaN(ctyValue)) {
                 return null;
             }
 
@@ -802,6 +815,7 @@
                 key: varKey,
                 targetValue: targetValue,
                 entValue: entValue,
+                ctyValue: ctyValue,
                 diff: targetValue - entValue
             };
         }
@@ -820,8 +834,8 @@
                 const data = getVariableData(varKey);
                 if (!data) return;
 
-                // pos 값이 작을수록 좋음: 긍정=diff<0 (target이 더 작음), 부정=diff>0 (target이 더 큼)
-                if ((isPositive && data.diff < 0) || (!isPositive && data.diff > 0)) {
+                // pos 값이 클수록 좋음 (1에 가까울수록 긍정적): 긍정=diff>0 (target이 더 큼), 부정=diff<0 (target이 더 작음)
+                if ((isPositive && data.diff > 0) || (!isPositive && data.diff < 0)) {
                     const priority = personaPreferences[varKey]?.priority || 0;
                     variables.push({
                         ...data,
@@ -842,8 +856,8 @@
             return variables;
         }
 
-        // 카드 블록 생성 함수 (실제 값 연결은 추후)
-        function createBlockCard(varKey, isPositive) {
+        // 카드 블록 생성 함수
+        function createBlockCard(varKey, isPositive, varData = null) {
             const cardConfig = preferenceCard[varKey];
             if (!cardConfig) return '';
 
@@ -854,26 +868,180 @@
             const legendLeft = cardConfig.bar_legend?.left || '';
             const legendRight = cardConfig.bar_legend?.right || '';
 
+            // 마커 위치 및 상/하단 배치
+            let markersHtml = '';
+            if (varData) {
+                // 3개 마커의 pos 값과 레이블
+                const markers = [
+                    { pos: varData.targetValue, label: '대상지역', class: 'target' },
+                    { pos: varData.ctyValue, label: '시군구 평균', class: '' },
+                    { pos: varData.entValue, label: '전체 평균', class: '' }
+                ];
+
+                // pos 값으로 정렬
+                const sortedMarkers = markers.sort((a, b) => a.pos - b.pos);
+
+                // 상/하단 번갈아 배치 (하단-상단-하단)
+                const positions = ['bottom', 'top', 'bottom'];
+
+                markersHtml = sortedMarkers.map((marker, index) => {
+                    const position = positions[index];
+                    const leftPercent = (marker.pos * 100).toFixed(1);
+                    return `<div class="marker ${position} value ${marker.class}" style="left: ${leftPercent}%;" data-pos="${marker.pos}"><span class="marker-label">${marker.label}</span></div>`;
+                }).join('');
+            } else {
+                // 데이터가 없을 때 기본 마커 (위치 없음)
+                markersHtml = `
+                    <div class="marker bottom value"><span class="marker-label">시군구 평균</span></div>
+                    <div class="marker bottom value"><span class="marker-label">전체 평균</span></div>
+                    <div class="marker bottom value target"><span class="marker-label">대상지역</span></div>
+                `;
+            }
+
             return `
                 <section class="block">
                     <div class="block-title">${title}</div>
-                    <div class="block-sub">데이터 연결 예정</div>
+                    <div class="block-sub">${varData ? '' : '데이터 연결 예정'}</div>
                     <div class="scale">
-                        ${isPositive ? `<div class="marker top legend-right">${legendRight}</div>` : `<div class="marker top legend-left">${legendLeft}</div>`}
+                        ${isPositive ? `<div class="marker top legend-right"><span class="marker-label">${legendRight}</span></div>` : `<div class="marker top legend-left"><span class="marker-label">${legendLeft}</span></div>`}
                         <div class="scale-bar"></div>
-                        <div class="marker bottom value">시군구 평균</div>
-                        <div class="marker bottom value">전체 평균</div>
-                        <div class="marker bottom value target">대상지역</div>
+                        ${markersHtml}
                     </div>
                 </section>
             `;
+        }
+
+        // 마커 라벨 겹침 해결 함수
+        function resolveAllMarkerLabels() {
+            const scales = document.querySelectorAll('.scale');
+
+            scales.forEach(scale => {
+                const bar = scale.querySelector('.scale-bar');
+                if (!bar) return;
+
+                const barRect = bar.getBoundingClientRect();
+                const markers = Array.from(scale.querySelectorAll('.marker.value'));
+
+                if (markers.length === 0) return;
+
+                const topMarkers = markers.filter(m => m.classList.contains('top'));
+                const bottomMarkers = markers.filter(m => m.classList.contains('bottom'));
+
+                resolveGroupCollisions(topMarkers, barRect);
+                resolveGroupCollisions(bottomMarkers, barRect);
+            });
+        }
+
+        function resolveGroupCollisions(markers, barRect) {
+            if (markers.length < 2) return;
+
+            const GAP = 10;
+            const PADDING = 5;
+            const STEP = 20;
+            const ITERATIONS = 15;
+
+            // 화면상 x 위치로 정렬
+            markers.sort((a, b) => {
+                const posA = parseFloat(a.dataset.pos || '0');
+                const posB = parseFloat(b.dataset.pos || '0');
+                return posA - posB;
+            });
+
+            // 각 마커의 정보 및 허용 shift 범위 계산
+            const markerData = markers.map(m => {
+                const label = m.querySelector('.marker-label');
+                if (!label) return null;
+
+                const pos = parseFloat(m.dataset.pos);
+                if (isNaN(pos)) return null;
+
+                const labelRect = label.getBoundingClientRect();
+                const centerX = barRect.left + (barRect.width * pos);
+                const halfWidth = labelRect.width / 2;
+
+                // 라벨이 bar 안에 완전히 들어오도록 하는 shift 범위
+                const minShift = (barRect.left + PADDING) - centerX + halfWidth;
+                const maxShift = (barRect.right - PADDING) - centerX - halfWidth;
+
+                return {
+                    marker: m,
+                    label: label,
+                    centerX: centerX,
+                    labelWidth: labelRect.width,
+                    shift: 0,
+                    minShift: minShift,
+                    maxShift: maxShift
+                };
+            }).filter(d => d !== null);
+
+            if (markerData.length < 2) return;
+
+            // Relaxation: 충돌을 반복적으로 해소
+            for (let iter = 0; iter < ITERATIONS; iter++) {
+                let hasCollision = false;
+
+                for (let i = 0; i < markerData.length - 1; i++) {
+                    const dataA = markerData[i];
+                    const dataB = markerData[i + 1];
+
+                    // 현재 shift를 반영한 라벨의 좌우 위치
+                    const aLeft = dataA.centerX + dataA.shift - dataA.labelWidth / 2;
+                    const aRight = dataA.centerX + dataA.shift + dataA.labelWidth / 2;
+                    const bLeft = dataB.centerX + dataB.shift - dataB.labelWidth / 2;
+
+                    // 충돌 감지
+                    const overlap = aRight + GAP - bLeft;
+
+                    if (overlap > 0) {
+                        hasCollision = true;
+
+                        // 각 마커가 이동할 수 있는 여유 공간 계산
+                        const aLeftRoom = dataA.shift - dataA.minShift;  // A가 왼쪽으로 더 갈 수 있는 거리
+                        const bRightRoom = dataB.maxShift - dataB.shift; // B가 오른쪽으로 더 갈 수 있는 거리
+
+                        // 이동량 결정: 각자가 갈 수 있는 만큼 비율로 배분
+                        const totalRoom = aLeftRoom + bRightRoom;
+
+                        if (totalRoom > 0) {
+                            const moveAmount = Math.min(STEP, overlap);
+
+                            // 비율로 배분
+                            const aRatio = aLeftRoom / totalRoom;
+                            const bRatio = bRightRoom / totalRoom;
+
+                            const aMoveLeft = moveAmount * aRatio;
+                            const bMoveRight = moveAmount * bRatio;
+
+                            dataA.shift -= aMoveLeft;
+                            dataB.shift += bMoveRight;
+                        } else {
+                            // 둘 다 여유가 없으면 최선을 다함
+                            dataA.shift -= Math.min(STEP / 2, aLeftRoom);
+                            dataB.shift += Math.min(STEP / 2, bRightRoom);
+                        }
+
+                        // 개별 범위로 clamp (매 스텝마다)
+                        dataA.shift = Math.max(dataA.minShift, Math.min(dataA.maxShift, dataA.shift));
+                        dataB.shift = Math.max(dataB.minShift, Math.min(dataB.maxShift, dataB.shift));
+                    }
+                }
+
+                // 더 이상 충돌이 없으면 조기 종료
+                if (!hasCollision) break;
+            }
+
+            // 최종 적용 (이미 clamp되어 있음)
+            markerData.forEach(data => {
+                data.label.style.setProperty('--label-shift', `${data.shift}px`);
+            });
         }
 
         // 페이지 렌더링
         async function renderCards() {
             // 1. 가격 블록 (고정)
             const priceBlock = document.getElementById('priceBlock');
-            const priceCard = createBlockCard('price_level', false); // 임시로 부정
+            const priceData = getVariableData('price_level');
+            const priceCard = createBlockCard('price_level', false, priceData);
             priceBlock.innerHTML = priceCard;
 
             // 2. 긍정 블록
@@ -885,7 +1053,7 @@
                 let positiveHtml = '<div class="divider-title">왜 이 지역이 좋은가요?</div>';
                 positiveHtml += '<div class="group">';
                 top3Positive.forEach(varData => {
-                    positiveHtml += createBlockCard(varData.key, true);
+                    positiveHtml += createBlockCard(varData.key, true, varData);
                 });
                 positiveHtml += '</div>';
                 positiveSection.innerHTML = positiveHtml;
@@ -897,10 +1065,12 @@
             const negativeVars = extractVariables(false);
             let selectedNegative = negativeVars.slice(0, 3);
 
-            // 나쁜 점이 0개인 경우, 긍정 중 편차가 작은 것 2개 선택 (중립)
-            if (selectedNegative.length === 0) {
-                const neutralVars = positiveVars.slice(-2).reverse();
-                selectedNegative = neutralVars.map(v => ({ ...v, isNeutral: true }));
+            // 부정 요소가 2개 미만인 경우, 긍정 중 편차가 작은 것으로 채워서 최소 2개 확보 (중립)
+            if (selectedNegative.length < 2) {
+                const needed = 2 - selectedNegative.length;
+                const neutralVars = positiveVars.slice(-needed).reverse();
+                const neutralWithFlag = neutralVars.map(v => ({ ...v, isNeutral: true }));
+                selectedNegative = [...selectedNegative, ...neutralWithFlag];
             }
 
             const negativeSection = document.getElementById('negativeSection');
@@ -908,9 +1078,8 @@
                 let negativeHtml = '<div class="divider-title warning">어떤 점을 고려해야 하나요?</div>';
                 negativeHtml += '<div class="group">';
                 selectedNegative.forEach(varData => {
-                    // 부정: negative 타이틀, 중립: positive 타이틀
-                    const usePositiveTitle = varData.isNeutral || varData.diff < 0;
-                    negativeHtml += createBlockCard(varData.key, usePositiveTitle);
+                    // 부정 섹션에서는 중립 요소도 negative 타이틀 사용
+                    negativeHtml += createBlockCard(varData.key, false, varData);
                 });
                 negativeHtml += '</div>';
                 negativeSection.innerHTML = negativeHtml;
@@ -918,7 +1087,19 @@
 
             console.log('Positive vars:', top3Positive);
             console.log('Negative vars:', selectedNegative);
+
+            requestAnimationFrame(() => {
+                resolveAllMarkerLabels();
+            });
         }
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                resolveAllMarkerLabels();
+            }, 200);
+        });
 
         // CSV 캐시
         let districtCsvCache = {};

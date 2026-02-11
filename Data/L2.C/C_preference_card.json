@@ -72,8 +72,8 @@
             "negative": "주요 버스노선 접근 불리"
         },
         "bar_legend": {
-            "left": "멂",
-            "right": "가까움"
+            "left": "나쁨",
+            "right": "좋음"
         }
     },
     "subway_access": {
@@ -83,8 +83,8 @@
             "negative": "지하철 접근 불리"
         },
         "bar_legend": {
-            "left": "멂",
-            "right": "가까움"
+            "left": "나쁨",
+            "right": "좋음"
         }
     }
 }

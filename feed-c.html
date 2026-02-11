@@ -141,6 +141,12 @@
             margin-bottom: 10px;
         }
 
+        .block-status {
+            font-size: 20px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+
         .block-sub {
             font-size: 22px;
             color: var(--gray);
@@ -188,11 +194,7 @@
             white-space: nowrap;
             transform: translateX(var(--label-shift, 0px));
             transition: transform 0.2s ease;
-        }
 
-        .marker.legend-left .marker-label,
-        .marker.legend-right .marker-label {
-            /* 범례는 추가 스타일 없음 */
         }
 
         .marker.top {
@@ -233,15 +235,24 @@
             border-bottom-color: var(--violet);
         }
 
-        .legend-left {
-            left: 0%;
-            transform: none;
+        /* 레전드 레이블 스타일 */
+        .scale-legend {
+            position: absolute;
+            top: 0;
+            font-size: 24px;
+            color: var(--gray);
+            font-family: 'esamanruMedium', sans-serif;
+            white-space: nowrap;
+            line-height: 1;
+        }
+
+        .scale-legend.left {
+            left: 0;
             text-align: left;
         }
 
-        .legend-right {
-            left: 100%;
-            transform: translateX(-100%);
+        .scale-legend.right {
+            right: 0;
             text-align: right;
         }
 
@@ -349,6 +360,10 @@
                 font-size: 26px;
             }
 
+            .block-status {
+                font-size: 18px;
+            }
+
             .block-sub {
                 font-size: 20px;
             }
@@ -372,6 +387,10 @@
             }
 
             .marker {
+                font-size: 22px;
+            }
+
+            .scale-legend {
                 font-size: 22px;
             }
 
@@ -454,6 +473,10 @@
                 font-size: 24px;
             }
 
+            .block-status {
+                font-size: 16px;
+            }
+
             .block-sub {
                 font-size: 16px;
             }
@@ -477,6 +500,10 @@
             }
 
             .marker {
+                font-size: 18px;
+            }
+
+            .scale-legend {
                 font-size: 18px;
             }
 
@@ -557,6 +584,10 @@
                 font-size: 20px;
             }
 
+            .block-status {
+                font-size: 14px;
+            }
+
             .block-sub {
                 font-size: 14px;
             }
@@ -580,6 +611,10 @@
             }
 
             .marker {
+                font-size: 16px;
+            }
+
+            .scale-legend {
                 font-size: 16px;
             }
 
@@ -773,10 +808,16 @@
                 preferenceVariables.htype_str[varKey] ||
                 preferenceVariables.dist[varKey];
 
-            if (!varConfig) return null;
+            if (!varConfig) {
+                console.warn(`[${varKey}] Variable config not found`);
+                return null;
+            }
 
             const distData = prosConsDist[distId];
-            if (!distData) return null;
+            if (!distData) {
+                console.warn(`[${varKey}] District data not found for distId: ${distId}`);
+                return null;
+            }
 
             let targetValue, entValue, ctyValue;
 
@@ -784,12 +825,19 @@
             if (preferenceVariables.htype[varKey]) {
                 const htypeData = prosConsHtype[distId];
                 if (!htypeData || !htypeData[personaTrsType] || !htypeData[personaTrsType][personaHouseType]) {
+                    console.warn(`[${varKey}] Htype data not found - TrsType: ${personaTrsType}, HouseType: ${personaHouseType}`);
                     return null;
                 }
                 const data = htypeData[personaTrsType][personaHouseType];
                 targetValue = data[varConfig + '_pos'];
                 entValue = data['ent_' + varConfig + '_pos'];
+
+                // cty 값: htypeData에 있으면 사용, 없으면 distData에서
                 ctyValue = data['cty_' + varConfig + '_pos'];
+                if (ctyValue === undefined || ctyValue === null || isNaN(ctyValue)) {
+                    ctyValue = distData['cty_' + varConfig + '_pos'];
+                }
+                console.log(`[${varKey}] From htype - target: ${targetValue}, ent: ${entValue}, cty: ${ctyValue}`);
             }
             // htype_str 또는 dist 변수 (pros_cons_dist에서 가져오기)
             else {
@@ -803,19 +851,44 @@
                 targetValue = distData[fullVarName + '_pos'];
                 entValue = distData['ent_' + fullVarName + '_pos'];
                 ctyValue = distData['cty_' + fullVarName + '_pos'];
+                console.log(`[${varKey}] From dist - fullVarName: ${fullVarName}, target: ${targetValue}, ent: ${entValue}, cty: ${ctyValue}`);
             }
 
             // NaN 체크
             if (targetValue === null || entValue === null || ctyValue === null ||
                 isNaN(targetValue) || isNaN(entValue) || isNaN(ctyValue)) {
+                console.warn(`[${varKey}] Invalid values - target: ${targetValue}, ent: ${entValue}, cty: ${ctyValue}`);
                 return null;
             }
+
+            // _pct 값 가져오기
+            let targetValuePct = null;
+            if (preferenceVariables.htype[varKey]) {
+                // htype 변수: htypeData에서 먼저 시도, 없으면 distData에서
+                const htypeData = prosConsHtype[distId];
+                if (htypeData && htypeData[personaTrsType] && htypeData[personaTrsType][personaHouseType]) {
+                    const data = htypeData[personaTrsType][personaHouseType];
+                    targetValuePct = data[varConfig + '_pct'];
+                    // htypeData에 없으면 distData에서
+                    if (targetValuePct === undefined || targetValuePct === null) {
+                        targetValuePct = distData[varConfig + '_pct'];
+                    }
+                }
+            } else {
+                let fullVarName = varConfig;
+                if (preferenceVariables.htype_str[varKey]) {
+                    fullVarName = varConfig.replace('HTYPE', personaHouseType);
+                }
+                targetValuePct = distData[fullVarName + '_pct'];
+            }
+            console.log(`[${varKey}] targetValuePct: ${targetValuePct}`);
 
             return {
                 key: varKey,
                 targetValue: targetValue,
                 entValue: entValue,
                 ctyValue: ctyValue,
+                targetValuePct: targetValuePct,
                 diff: targetValue - entValue
             };
         }
@@ -831,11 +904,24 @@
             const variables = [];
 
             allVarKeys.forEach(varKey => {
+                // price_level은 메인 블록에서 별도로 표시하므로 제외
+                if (varKey === 'price_level') return;
+
                 const data = getVariableData(varKey);
                 if (!data) return;
 
                 // pos 값이 클수록 좋음 (1에 가까울수록 긍정적): 긍정=diff>0 (target이 더 큼), 부정=diff<0 (target이 더 작음)
                 if ((isPositive && data.diff > 0) || (!isPositive && data.diff < 0)) {
+                    // 부정 항목일 때: targetValue가 0.65 이상(좋음 이상)이면 제외
+                    if (!isPositive && data.targetValue >= 0.65) {
+                        console.log(`[${varKey}] ⛔ Excluded from negative: targetValue=${data.targetValue.toFixed(3)} >= 0.65 (diff=${data.diff.toFixed(3)})`);
+                        return;
+                    }
+
+                    if (!isPositive) {
+                        console.log(`[${varKey}] ✅ Included in negative: targetValue=${data.targetValue.toFixed(3)} < 0.65 (diff=${data.diff.toFixed(3)})`);
+                    }
+
                     const priority = personaPreferences[varKey]?.priority || 0;
                     variables.push({
                         ...data,
@@ -856,6 +942,30 @@
             return variables;
         }
 
+        // 점수 범위에 따른 상태 텍스트 매핑
+        const scoreRanges = [
+            { min: 0.85, max: 1.00, text: '최고' },
+            { min: 0.65, max: 0.85, text: '좋음' },
+            { min: 0.35, max: 0.65, text: '보통' },
+            { min: 0.15, max: 0.35, text: '다소 나쁨' },
+            { min: 0.00, max: 0.15, text: '나쁨' }
+        ];
+
+        function getScoreLabel(score) {
+            if (score === null || score === undefined || isNaN(score)) return '보통';
+
+            for (const range of scoreRanges) {
+                if (score >= range.min && score < range.max) {
+                    return range.text;
+                }
+                // 마지막 범위 (1.00 포함)
+                if (range.max === 1.00 && score === 1.00) {
+                    return range.text;
+                }
+            }
+            return '보통';
+        }
+
         // 카드 블록 생성 함수
         function createBlockCard(varKey, isPositive, varData = null) {
             const cardConfig = preferenceCard[varKey];
@@ -867,6 +977,16 @@
 
             const legendLeft = cardConfig.bar_legend?.left || '';
             const legendRight = cardConfig.bar_legend?.right || '';
+
+            // 상태 정보 생성
+            let statusHtml = '';
+            if (varData && varData.targetValue !== null && varData.targetValuePct !== null) {
+                const statusText = getScoreLabel(varData.targetValue);
+                // 100-pct로 계산 (예: 98 -> 상위 2%)
+                const pctValue = Math.round(100 - varData.targetValuePct);
+                const rankText = pctValue <= 50 ? '상위' : '하위';
+                statusHtml = `<div class="block-status">${statusText} | ${rankText} ${pctValue}%</div>`;
+            }
 
             // 마커 위치 및 상/하단 배치
             let markersHtml = '';
@@ -901,9 +1021,11 @@
             return `
                 <section class="block">
                     <div class="block-title">${title}</div>
+                    ${statusHtml}
                     <div class="block-sub">${varData ? '' : '데이터 연결 예정'}</div>
                     <div class="scale">
-                        ${isPositive ? `<div class="marker top legend-right"><span class="marker-label">${legendRight}</span></div>` : `<div class="marker top legend-left"><span class="marker-label">${legendLeft}</span></div>`}
+                        <div class="scale-legend left">${legendLeft}</div>
+                        <div class="scale-legend right">${legendRight}</div>
                         <div class="scale-bar"></div>
                         ${markersHtml}
                     </div>
@@ -927,13 +1049,29 @@
                 const topMarkers = markers.filter(m => m.classList.contains('top'));
                 const bottomMarkers = markers.filter(m => m.classList.contains('bottom'));
 
-                resolveGroupCollisions(topMarkers, barRect);
-                resolveGroupCollisions(bottomMarkers, barRect);
+                // 레전드 라벨 정보 수집 (TOP 위치에 존재)
+                const legendLabels = Array.from(scale.querySelectorAll('.scale-legend'))
+                    .map(legend => {
+                        const rect = legend.getBoundingClientRect();
+                        const isLeft = legend.classList.contains('left');
+                        return {
+                            left: rect.left,
+                            right: rect.right,
+                            width: rect.width,
+                            isLeft: isLeft  // true면 왼쪽(나쁨), false면 오른쪽(좋음)
+                        };
+                    })
+                    .filter(r => r !== null);
+
+                // TOP 마커는 레전드와의 충돌 체크 필요
+                resolveGroupCollisions(topMarkers, barRect, legendLabels);
+                // BOTTOM 마커는 레전드와 충돌하지 않음
+                resolveGroupCollisions(bottomMarkers, barRect, []);
             });
         }
 
-        function resolveGroupCollisions(markers, barRect) {
-            if (markers.length < 2) return;
+        function resolveGroupCollisions(markers, barRect, legendLabels = []) {
+            if (markers.length === 0) return;
 
             const GAP = 10;
             const PADDING = 5;
@@ -974,55 +1112,98 @@
                 };
             }).filter(d => d !== null);
 
-            if (markerData.length < 2) return;
+            if (markerData.length === 0) return;
 
             // Relaxation: 충돌을 반복적으로 해소
             for (let iter = 0; iter < ITERATIONS; iter++) {
                 let hasCollision = false;
 
-                for (let i = 0; i < markerData.length - 1; i++) {
-                    const dataA = markerData[i];
-                    const dataB = markerData[i + 1];
+                // 1) 마커 간 충돌 처리
+                if (markerData.length >= 2) {
+                    for (let i = 0; i < markerData.length - 1; i++) {
+                        const dataA = markerData[i];
+                        const dataB = markerData[i + 1];
 
-                    // 현재 shift를 반영한 라벨의 좌우 위치
-                    const aLeft = dataA.centerX + dataA.shift - dataA.labelWidth / 2;
-                    const aRight = dataA.centerX + dataA.shift + dataA.labelWidth / 2;
-                    const bLeft = dataB.centerX + dataB.shift - dataB.labelWidth / 2;
+                        // 현재 shift를 반영한 라벨의 좌우 위치
+                        const aLeft = dataA.centerX + dataA.shift - dataA.labelWidth / 2;
+                        const aRight = dataA.centerX + dataA.shift + dataA.labelWidth / 2;
+                        const bLeft = dataB.centerX + dataB.shift - dataB.labelWidth / 2;
 
-                    // 충돌 감지
-                    const overlap = aRight + GAP - bLeft;
+                        // 충돌 감지
+                        const overlap = aRight + GAP - bLeft;
 
-                    if (overlap > 0) {
-                        hasCollision = true;
+                        if (overlap > 0) {
+                            hasCollision = true;
 
-                        // 각 마커가 이동할 수 있는 여유 공간 계산
-                        const aLeftRoom = dataA.shift - dataA.minShift;  // A가 왼쪽으로 더 갈 수 있는 거리
-                        const bRightRoom = dataB.maxShift - dataB.shift; // B가 오른쪽으로 더 갈 수 있는 거리
+                            // 각 마커가 이동할 수 있는 여유 공간 계산
+                            const aLeftRoom = dataA.shift - dataA.minShift;  // A가 왼쪽으로 더 갈 수 있는 거리
+                            const bRightRoom = dataB.maxShift - dataB.shift; // B가 오른쪽으로 더 갈 수 있는 거리
 
-                        // 이동량 결정: 각자가 갈 수 있는 만큼 비율로 배분
-                        const totalRoom = aLeftRoom + bRightRoom;
+                            // 이동량 결정: 각자가 갈 수 있는 만큼 비율로 배분
+                            const totalRoom = aLeftRoom + bRightRoom;
 
-                        if (totalRoom > 0) {
-                            const moveAmount = Math.min(STEP, overlap);
+                            if (totalRoom > 0) {
+                                const moveAmount = Math.min(STEP, overlap);
 
-                            // 비율로 배분
-                            const aRatio = aLeftRoom / totalRoom;
-                            const bRatio = bRightRoom / totalRoom;
+                                // 비율로 배분
+                                const aRatio = aLeftRoom / totalRoom;
+                                const bRatio = bRightRoom / totalRoom;
 
-                            const aMoveLeft = moveAmount * aRatio;
-                            const bMoveRight = moveAmount * bRatio;
+                                const aMoveLeft = moveAmount * aRatio;
+                                const bMoveRight = moveAmount * bRatio;
 
-                            dataA.shift -= aMoveLeft;
-                            dataB.shift += bMoveRight;
-                        } else {
-                            // 둘 다 여유가 없으면 최선을 다함
-                            dataA.shift -= Math.min(STEP / 2, aLeftRoom);
-                            dataB.shift += Math.min(STEP / 2, bRightRoom);
+                                dataA.shift -= aMoveLeft;
+                                dataB.shift += bMoveRight;
+                            } else {
+                                // 둘 다 여유가 없으면 최선을 다함
+                                dataA.shift -= Math.min(STEP / 2, aLeftRoom);
+                                dataB.shift += Math.min(STEP / 2, bRightRoom);
+                            }
+
+                            // 개별 범위로 clamp (매 스텝마다)
+                            dataA.shift = Math.max(dataA.minShift, Math.min(dataA.maxShift, dataA.shift));
+                            dataB.shift = Math.max(dataB.minShift, Math.min(dataB.maxShift, dataB.shift));
                         }
+                    }
+                }
 
-                        // 개별 범위로 clamp (매 스텝마다)
-                        dataA.shift = Math.max(dataA.minShift, Math.min(dataA.maxShift, dataA.shift));
-                        dataB.shift = Math.max(dataB.minShift, Math.min(dataB.maxShift, dataB.shift));
+                // 2) 레전드 라벨과의 충돌 처리
+                if (legendLabels.length > 0) {
+                    for (let i = 0; i < markerData.length; i++) {
+                        const data = markerData[i];
+                        const markerLeft = data.centerX + data.shift - data.labelWidth / 2;
+                        const markerRight = data.centerX + data.shift + data.labelWidth / 2;
+
+                        for (const legendRect of legendLabels) {
+                            // 레전드와 마커의 겹침 확인
+                            const overlapWithLegend = !(markerRight + GAP <= legendRect.left || markerLeft >= legendRect.right + GAP);
+
+                            if (overlapWithLegend) {
+                                hasCollision = true;
+
+                                // 왼쪽 레전드(나쁨) → 마커를 오른쪽으로 밀기
+                                if (legendRect.isLeft) {
+                                    const requiredShift = (legendRect.right + GAP) - markerLeft;
+                                    if (requiredShift > 0) {
+                                        const moveRight = Math.min(STEP, requiredShift);
+                                        const rightRoom = data.maxShift - data.shift;
+                                        data.shift += Math.min(moveRight, rightRoom);
+                                    }
+                                }
+                                // 오른쪽 레전드(좋음) → 마커를 왼쪽으로 밀기
+                                else {
+                                    const requiredShift = markerRight - (legendRect.left - GAP);
+                                    if (requiredShift > 0) {
+                                        const moveLeft = Math.min(STEP, requiredShift);
+                                        const leftRoom = data.shift - data.minShift;
+                                        data.shift -= Math.min(moveLeft, leftRoom);
+                                    }
+                                }
+
+                                // 범위로 clamp
+                                data.shift = Math.max(data.minShift, Math.min(data.maxShift, data.shift));
+                            }
+                        }
                     }
                 }
 
@@ -1041,7 +1222,10 @@
             // 1. 가격 블록 (고정)
             const priceBlock = document.getElementById('priceBlock');
             const priceData = getVariableData('price_level');
-            const priceCard = createBlockCard('price_level', false, priceData);
+            console.log('Price data:', priceData);
+            // 모든 변수는 1에 가까울수록 좋게 정렬됨: diff > 0이면 긍정, diff < 0이면 부정
+            const isPricePositive = priceData && priceData.diff > 0;
+            const priceCard = createBlockCard('price_level', isPricePositive, priceData);
             priceBlock.innerHTML = priceCard;
 
             // 2. 긍정 블록
@@ -1065,12 +1249,20 @@
             const negativeVars = extractVariables(false);
             let selectedNegative = negativeVars.slice(0, 3);
 
+            // 긍정에 이미 사용된 변수 키 저장
+            const usedPositiveKeys = new Set(top3Positive.map(v => v.key));
+
             // 부정 요소가 2개 미만인 경우, 긍정 중 편차가 작은 것으로 채워서 최소 2개 확보 (중립)
             if (selectedNegative.length < 2) {
                 const needed = 2 - selectedNegative.length;
-                const neutralVars = positiveVars.slice(-needed).reverse();
+                // 중립 후보: targetValue < 0.65이고 긍정에 사용되지 않은 항목만 선택
+                const neutralCandidates = positiveVars.filter(v =>
+                    v.targetValue < 0.65 && !usedPositiveKeys.has(v.key)
+                );
+                const neutralVars = neutralCandidates.slice(-needed).reverse();
                 const neutralWithFlag = neutralVars.map(v => ({ ...v, isNeutral: true }));
                 selectedNegative = [...selectedNegative, ...neutralWithFlag];
+                console.log('Neutral vars added:', neutralVars.map(v => `${v.key}(${v.targetValue.toFixed(3)})`));
             }
 
             const negativeSection = document.getElementById('negativeSection');
