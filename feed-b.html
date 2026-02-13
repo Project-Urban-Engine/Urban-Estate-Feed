@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed B - Urban Engine</title>
+    <style>
+        /* ==========================================================================
+        Urban Engine – Font Size Scale Reference (px-based)
+        기준: Web(Desktop) px → 반응형 축소 매핑
+        --------------------------------------------------------------------------
+        Web px | Tablet px | Mobile px | Small Mobile px
+        --------------------------------------------------------------------------
+        44 | 38 | 32 | 26
+        38 | 34 | 28 | 24
+        28 | 26 | 24 | 20
+        24 | 22 | 18 | 16
+        22 | 20 | 16 | 14
+        20 | 18 | 14 | 13
+        18 | 16 | 14 | 13
+        16 | 16 | 15 | 14
+        ========================================================================== */
+
+        /* Feed A/C 공통 폰트 재사용 */
+        @font-face {
+            font-family: 'esamanruLight';
+            src: url('Source/Fonts/esamanru Light.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'esamanruMedium';
+            src: url('Source/Fonts/esamanru Medium.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* Feed A/C 공통 컬러 토큰 재사용 */
+        :root {
+            --violet: #6f41b0;
+            --gray: #808080;
+            --light-gray: #b3b3b3;
+            --black: #111111;
+            --white: #f9f9f9;
+            --bg: #f6f7f9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'esamanruLight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--black);
+        }
+
+        /* Feed A/C 공통 레이아웃 패턴 재사용 */
+        .page {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 50px 50px 120px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 24px;
+            color: var(--black);
+        }
+
+        .hero {
+            margin-top: 120px;
+            margin-bottom: 60px;
+        }
+
+        .hero small {
+            display: block;
+            color: var(--gray);
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .headline {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 44px;
+            line-height: 1.3;
+            margin-bottom: 18px;
+        }
+
+        .headline span {
+            background: linear-gradient(135deg, #8B5CF6 0%, #6f41b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .summary {
+            color: var(--gray);
+            font-size: 22px;
+            line-height: 1.6;
+        }
+
+        /* Feed C block / Feed A ranking-card의 카드 스타일 재사용 */
+        .surface-card {
+            background-color: var(--white);
+            border-radius: 30px;
+            padding: 30px;
+            border: 1px solid rgba(17, 17, 17, 0.06);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .surface-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-card {
+            margin-top: 30px;
+        }
+
+        .video-card h2 {
+            font-family: 'esamanruMedium', sans-serif;
+            color: var(--violet);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .video-card p {
+            color: var(--gray);
+            font-size: 18px;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        .shorts-frame {
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 9 / 16;
+            margin: 0 auto;
+            border: none;
+            border-radius: 24px;
+            display: block;
+            box-shadow: 0 8px 20px rgba(17, 17, 17, 0.15);
+            background: #000;
+        }
+
+        /* Feed A의 보라 CTA 톤 재사용 */
+        .next-panel {
+            margin-top: 120px;
+            background: linear-gradient(135deg, #8B5CF6 0%, #6f41b0 100%);
+            border-radius: 28px;
+            color: var(--white);
+            text-align: center;
+            padding: 48px 24px;
+            box-shadow: 0 10px 24px rgba(111, 65, 176, 0.35);
+        }
+
+        .next-panel h3 {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .next-panel p {
+            font-size: 20px;
+            margin-bottom: 26px;
+            opacity: 0.95;
+        }
+
+        .cta-next {
+            display: inline-block;
+            text-decoration: none;
+            border-radius: 999px;
+            padding: 14px 26px;
+            background: var(--white);
+            color: var(--violet);
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 18px;
+            transition: all 0.25s ease;
+        }
+
+        .cta-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249, 249, 249, 0.35);
+        }
+
+        /* 태블릿 (Feed A/C와 동일 breakpoint) */
+        @media (max-width: 960px) {
+            .page {
+                padding: 40px 30px 100px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .hero {
+                margin-top: 100px;
+                margin-bottom: 52px;
+            }
+
+            .hero small {
+                font-size: 22px;
+            }
+
+            .headline {
+                font-size: 38px;
+            }
+
+            .summary {
+                font-size: 20px;
+            }
+
+            .surface-card {
+                border-radius: 26px;
+                padding: 26px;
+            }
+
+            .video-card h2 {
+                font-size: 26px;
+            }
+
+            .video-card p {
+                font-size: 16px;
+            }
+
+            .next-panel {
+                margin-top: 100px;
+            }
+
+            .next-panel h3 {
+                font-size: 30px;
+            }
+
+            .next-panel p {
+                font-size: 18px;
+            }
+        }
+
+        /* 모바일 (Feed A/C와 동일 breakpoint) */
+        @media (max-width: 768px) {
+            .page {
+                max-width: 420px;
+                padding: 24px 20px 80px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .hero {
+                margin-top: 80px;
+                margin-bottom: 44px;
+            }
+
+            .hero small {
+                font-size: 18px;
+            }
+
+            .headline {
+                font-size: 32px;
+                margin-bottom: 14px;
+            }
+
+            .summary {
+                font-size: 16px;
+            }
+
+            .surface-card {
+                border-radius: 24px;
+                padding: 20px;
+            }
+
+            .video-card h2 {
+                font-size: 24px;
+            }
+
+            .video-card p {
+                font-size: 16px;
+            }
+
+            .shorts-frame {
+                border-radius: 18px;
+            }
+
+            .next-panel {
+                margin-top: 90px;
+                border-radius: 22px;
+                padding: 40px 18px;
+            }
+
+            .next-panel h3 {
+                font-size: 28px;
+            }
+
+            .next-panel p {
+                font-size: 18px;
+            }
+        }
+
+        /* 작은 모바일 (Feed A/C와 동일 breakpoint) */
+        @media (max-width: 480px) {
+            .page {
+                padding: 20px 16px 64px;
+            }
+
+            .logo {
+                font-size: 16px;
+            }
+
+            .hero {
+                margin-top: 60px;
+                margin-bottom: 36px;
+            }
+
+            .hero small {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .headline {
+                font-size: 26px;
+            }
+
+            .summary {
+                font-size: 14px;
+            }
+
+            .surface-card {
+                border-radius: 20px;
+                padding: 16px;
+            }
+
+            .video-card h2 {
+                font-size: 20px;
+            }
+
+            .video-card p {
+                font-size: 14px;
+            }
+
+            .next-panel {
+                margin-top: 72px;
+                border-radius: 20px;
+                padding: 34px 16px;
+            }
+
+            .next-panel h3 {
+                font-size: 24px;
+            }
+
+            .next-panel p {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+
+            .cta-next {
+                font-size: 16px;
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header>
+            <div class="logo">Urban Engine</div>
+        </header>
+
+        <section class="hero">
+            <small>서울 광진구 자양동 · 자양로 2길 일대</small>
+            <h1 class="headline"><span>현장 쇼츠</span>로 구역 분위기를<br>빠르게 살펴보세요</h1>
+            <p class="summary">
+                feed 스타일에 맞춰 핵심만 보도록, 대상 구역 쇼츠를 중앙 카드에 배치했습니다.<br>
+                아래 CTA 카드에서 자연스럽게 다음 단계(Feed C)로 이동할 수 있습니다.
+            </p>
+        </section>
+
+        <section class="video-card surface-card">
+            <h2>대상 구역 쇼츠 영상</h2>
+            <p>유튜브 URL 기반 삽입 방식으로 연결되었습니다.</p>
+            <iframe class="shorts-frame" src="https://www.youtube.com/embed/tVOob9gOe2E"
+                title="Urban Engine 대상 구역 쇼츠"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+        </section>
+
+        <section class="next-panel" id="nextPanel">
+            <h3>이제 상세 선호 분석으로 넘어갈까요?</h3>
+            <p>Feed C에서 선호 지표와 구역 인사이트를 확인할 수 있어요.</p>
+            <a class="cta-next" href="feed-c.html">Feed C로 이동</a>
+        </section>
+    </div>
+</body>
+
+</html>
