@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed D - Urban Engine</title>
+    <style>
+        @font-face {
+            font-family: 'esamanruLight';
+            src: url('Source/Fonts/esamanru Light.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'esamanruMedium';
+            src: url('Source/Fonts/esamanru Medium.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --violet: #6f41b0;
+            --lightviolet: #8f6acb;
+            --gray: #808080;
+            --light-gray: #d7d7dc;
+            --black: #111111;
+            --white: #f9f9f9;
+            --bg: #f6f7f9;
+            --orange: #f7931e;
+            --blue: #41a4ff;
+            --red: #f46f6f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'esamanruLight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--black);
+        }
+
+        .page {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 24px 20px 80px;
+        }
+
+        .logo {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 18px;
+            margin-bottom: 52px;
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .tab {
+            min-width: 82px;
+            border: none;
+            border-radius: 999px;
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 14px;
+            line-height: 1;
+            color: var(--white);
+            background: #8f8f92;
+            padding: 8px 16px;
+        }
+
+        .tab.active {
+            background: var(--violet);
+        }
+
+        .hero small {
+            display: block;
+            color: var(--gray);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .hero h1 {
+            font-family: 'esamanruMedium', sans-serif;
+            color: var(--lightviolet);
+            font-size: 52px;
+            line-height: 1.15;
+            margin-bottom: 26px;
+        }
+
+        .map-card {
+            position: relative;
+            border-radius: 0;
+            overflow: hidden;
+            margin-bottom: 90px;
+        }
+
+        .map-card img.bg {
+            width: 100%;
+            display: block;
+        }
+
+        .map-marker {
+            position: absolute;
+            top: 38%;
+            left: 58%;
+            width: 34px;
+            transform: translate(-50%, -50%);
+        }
+
+        .section-title {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 54px;
+            margin-bottom: 16px;
+        }
+
+        .insight-grid {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 92px;
+        }
+
+        .insight-card {
+            background: #ececf0;
+            border-radius: 30px;
+            min-height: 170px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 18px 10px;
+        }
+
+        .insight-card dt {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .insight-card dd {
+            font-family: 'esamanruMedium', sans-serif;
+            color: var(--lightviolet);
+            font-size: 50px;
+            line-height: 1.1;
+        }
+
+        .insight-card dd.orange {
+            color: var(--orange);
+        }
+
+        .insight-section,
+        .table-section {
+            background: #f0f0f3;
+            margin: 0 -20px;
+            padding: 40px 20px;
+        }
+
+        .insight-block {
+            margin-bottom: 80px;
+        }
+
+        .insight-block:last-child {
+            margin-bottom: 20px;
+        }
+
+        .insight-block h3 {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 46px;
+            margin-bottom: 22px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 14px;
+        }
+
+        .legend::before {
+            content: '▲';
+            color: var(--violet);
+            font-size: 14px;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 128px 1fr;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .bar-label {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 16px;
+            color: #444;
+            border-radius: 999px;
+            background: #e2e2e6;
+            text-align: center;
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            padding: 0 10px;
+            word-break: keep-all;
+            white-space: nowrap;
+        }
+
+        .bar-label.active {
+            color: var(--violet);
+            background: #d8d0e8;
+        }
+
+        .bar-wrap {
+            position: relative;
+            padding-top: 22px;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -2px;
+            left: var(--pos, 50%);
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #666;
+        }
+
+        .bar-track {
+            height: 10px;
+            background: linear-gradient(90deg, #eee 0%, #8f64d0 100%);
+            border-radius: 99px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border: 1px solid #7f6a9b;
+            background: rgba(255, 255, 255, 0.2);
+            width: var(--fill, 60%);
+            margin-left: var(--offset, 20%);
+        }
+
+        .bar-pointer {
+            position: absolute;
+            bottom: -14px;
+            left: var(--pos, 50%);
+            transform: translateX(-50%);
+            color: var(--violet);
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        .table-section {
+            padding-top: 24px;
+            padding-bottom: 90px;
+        }
+
+        .table-title {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 46px;
+            margin-bottom: 24px;
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 15px;
+        }
+
+        .price-table th,
+        .price-table td {
+            text-align: left;
+            padding: 10px 6px;
+        }
+
+        .price-table thead th {
+            font-family: 'esamanruMedium', sans-serif;
+            border-bottom: 1px solid #555;
+            font-size: 14px;
+        }
+
+        .price-table th.high {
+            color: var(--red);
+        }
+
+        .price-table th.avg {
+            color: var(--lightviolet);
+        }
+
+        .price-table th.low {
+            color: var(--blue);
+        }
+
+        .price-summary-row {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .building-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-btn {
+            border: none;
+            background: transparent;
+            color: var(--lightviolet);
+            font-size: 16px;
+            cursor: pointer;
+            line-height: 1;
+            transform: rotate(0deg);
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-btn.open {
+            transform: rotate(90deg);
+        }
+
+        .price-detail {
+            display: none;
+            background: #efeff2;
+        }
+
+        .price-detail.open {
+            display: table-row;
+        }
+
+        .detail-wrap {
+            padding: 14px 0 8px;
+        }
+
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 13px;
+        }
+
+        .detail-table th,
+        .detail-table td {
+            padding: 7px 6px;
+            text-align: left;
+        }
+
+        .detail-table thead th {
+            font-family: 'esamanruMedium', sans-serif;
+            border-bottom: 1px solid #666;
+            font-size: 13px;
+        }
+
+        @media (max-width: 960px) {
+            .page {
+                padding: 24px 20px 70px;
+            }
+
+            .hero h1 {
+                font-size: 44px;
+            }
+
+            .section-title,
+            .insight-block h3,
+            .table-title {
+                font-size: 36px;
+            }
+
+            .insight-card dd {
+                font-size: 42px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 16px;
+                margin-bottom: 40px;
+            }
+
+            .hero small {
+                font-size: 16px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .insight-card dt {
+                font-size: 32px;
+            }
+
+            .insight-card dd {
+                font-size: 30px;
+            }
+
+            .insight-block h3,
+            .table-title {
+                font-size: 18px;
+            }
+
+            .bar-label {
+                font-size: 14px;
+            }
+
+            .bar-row {
+                grid-template-columns: 84px 1fr;
+                gap: 10px;
+            }
+
+            .bar-value {
+                font-size: 12px;
+            }
+
+            .price-table,
+            .detail-table {
+                font-size: 14px;
+            }
+
+            .price-table thead th {
+                font-size: 14px;
+            }
+
+            .detail-table thead th {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header>
+            <div class="logo">Urban Engine</div>
+        </header>
+
+        <section class="hero">
+            <div class="tab-group">
+                <button class="tab active">매매</button>
+                <button class="tab">전세</button>
+                <button class="tab">월세</button>
+            </div>
+            <small>서울시 광진구 자양동</small>
+            <h1>능동로13길 일대 - A구역</h1>
+        </section>
+
+        <section class="map-card">
+            <img class="bg" src="Data/L2.A/A_KeyMap/11215710_map.png" alt="구역 지도">
+            <img class="map-marker" src="Source/gps_marker.svg" alt="선택 위치">
+        </section>
+
+        <section>
+            <h2 class="section-title">이것만 알아도 충분!</h2>
+            <div class="tab-group">
+                <button class="tab active">다세대</button>
+                <button class="tab">오피스텔</button>
+                <button class="tab">아파트</button>
+            </div>
+
+            <dl class="insight-grid">
+                <div class="insight-card">
+                    <dt>주택 수</dt>
+                    <dd>32채</dd>
+                </div>
+                <div class="insight-card">
+                    <dt>세대 수 (추정)</dt>
+                    <dd>850세대</dd>
+                </div>
+                <div class="insight-card">
+                    <dt>노후도</dt>
+                    <dd class="orange">35.7년</dd>
+                </div>
+                <div class="insight-card">
+                    <dt>주차 대수</dt>
+                    <dd>2.3대/세대</dd>
+                </div>
+                <div class="insight-card">
+                    <dt>부동산 가격</dt>
+                    <dd class="orange">가파른 상승</dd>
+                </div>
+                <div class="insight-card">
+                    <dt>주요 거래 평형</dt>
+                    <dd>M</dd>
+                </div>
+            </dl>
+        </section>
+
+        <section class="insight-section">
+            <article class="insight-block">
+                <h3>공급 평형별 실거래가 분포</h3>
+                <div class="legend">거주가 중앙값</div>
+
+                <div class="bar-row">
+                    <div class="bar-label">59~72㎡</div>
+                    <div class="bar-wrap" style="--pos:18%;">
+                        <div class="bar-value">5.3억</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="--fill: 45%; --offset: 22%;"></div>
+                        </div>
+                        <div class="bar-pointer">▲</div>
+                    </div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">72~89㎡</div>
+                    <div class="bar-wrap" style="--pos:40%;">
+                        <div class="bar-value">8.2억</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="--fill: 42%; --offset: 34%;"></div>
+                        </div>
+                        <div class="bar-pointer">▲</div>
+                    </div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label active">89~101㎡</div>
+                    <div class="bar-wrap" style="--pos:72%;">
+                        <div class="bar-value">13.1억</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="--fill: 30%; --offset: 60%;"></div>
+                        </div>
+                        <div class="bar-pointer">▲</div>
+                    </div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">101㎡ 이상</div>
+                    <div class="bar-wrap" style="--pos:86%;">
+                        <div class="bar-value">15.3억</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="--fill: 34%; --offset: 58%;"></div>
+                        </div>
+                        <div class="bar-pointer">▲</div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="insight-block">
+                <h3>노후도별 실거래가 분포</h3>
+
+                <div class="bar-row">
+                    <div class="bar-label">5년 이하</div>
+                    <div class="bar-wrap" style="--pos:18%;">
+                        <div class="bar-value">5.3억</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="--fill: 38%; --offset: 16%;"></div>
+                        </div>
+                        <div class="bar-pointer">▲</div>
+                    </div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">5~10년</div>
+                    <div class="bar-wrap" style="--pos:40%;">
+                        <div class="bar-value">8.2억</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="--fill: 44%; --offset: 34%;"></div>
+                        </div>
+                        <div class="bar-pointer">▲</div>
+                    </div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label active">10~20년</div>
+                    <div class="bar-wrap" style="--pos:72%;">
+                        <div class="bar-value">13.1억</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="--fill: 30%; --offset: 62%;"></div>
+                        </div>
+                        <div class="bar-pointer">▲</div>
+                    </div>
+                </div>
+
+                <div class="bar-row">
+                    <div class="bar-label">20년 이상</div>
+                    <div class="bar-wrap" style="--pos:86%;">
+                        <div class="bar-value">15.3억</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="--fill: 34%; --offset: 58%;"></div>
+                        </div>
+                        <div class="bar-pointer">▲</div>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <section class="table-section">
+            <h3 class="table-title">주요 매물 실거래가 (최근 2년)</h3>
+
+            <table class="price-table">
+                <thead>
+                    <tr>
+                        <th style="width:38%;">건물명</th>
+                        <th class="high">상한가</th>
+                        <th class="avg">평균가</th>
+                        <th class="low">하한가</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="price-summary-row">
+                        <td>
+                            <div class="building-cell">
+                                <button class="toggle-btn" aria-label="상세 펼치기" data-target="detail-1">▶</button>
+                                자양 주공아파트
+                            </div>
+                        </td>
+                        <td>2억 / 150</td>
+                        <td>1.5억 / 120</td>
+                        <td>1.3억 / 100</td>
+                    </tr>
+                    <tr class="price-detail" id="detail-1">
+                        <td colspan="4">
+                            <div class="detail-wrap">
+                                <table class="detail-table">
+                                    <thead>
+                                        <tr>
+                                            <th>거래일자</th>
+                                            <th>층수</th>
+                                            <th>면적</th>
+                                            <th>준공연도</th>
+                                            <th>가격</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>2025년 12월</td><td>16층</td><td>82㎡</td><td>1999년</td><td>1.3억 / 100</td></tr>
+                                        <tr><td>2025년 12월</td><td>16층</td><td>82㎡</td><td>1999년</td><td>1.3억 / 100</td></tr>
+                                        <tr><td>2025년 12월</td><td>16층</td><td>82㎡</td><td>1999년</td><td>1.3억 / 100</td></tr>
+                                        <tr><td>2025년 12월</td><td>16층</td><td>82㎡</td><td>1999년</td><td>1.3억 / 100</td></tr>
+                                        <tr><td>2025년 12월</td><td>16층</td><td>82㎡</td><td>1999년</td><td>1.3억 / 100</td></tr>
+                                        <tr><td>2025년 12월</td><td>16층</td><td>82㎡</td><td>1999년</td><td>1.3억 / 100</td></tr>
+                                        <tr><td>2025년 12월</td><td>16층</td><td>82㎡</td><td>1999년</td><td>1.3억 / 100</td></tr>
+                                        <tr><td>2025년 12월</td><td>16층</td><td>82㎡</td><td>1999년</td><td>1.3억 / 100</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="price-summary-row">
+                        <td>
+                            <div class="building-cell">
+                                <button class="toggle-btn" aria-label="상세 펼치기" data-target="detail-2">▶</button>
+                                자양 주공아파트
+                            </div>
+                        </td>
+                        <td>2억 / 150</td>
+                        <td>1.5억 / 120</td>
+                        <td>1.3억 / 100</td>
+                    </tr>
+                    <tr class="price-detail" id="detail-2"><td colspan="4"></td></tr>
+
+                    <tr class="price-summary-row">
+                        <td><div class="building-cell"><button class="toggle-btn" data-target="detail-3">▶</button>자양 주공아파트</div></td>
+                        <td>2억 / 150</td><td>1.5억 / 120</td><td>1.3억 / 100</td>
+                    </tr>
+                    <tr class="price-detail" id="detail-3"><td colspan="4"></td></tr>
+
+                    <tr class="price-summary-row">
+                        <td><div class="building-cell"><button class="toggle-btn" data-target="detail-4">▶</button>자양 주공아파트</div></td>
+                        <td>2억 / 150</td><td>1.5억 / 120</td><td>1.3억 / 100</td>
+                    </tr>
+                    <tr class="price-detail" id="detail-4"><td colspan="4"></td></tr>
+
+                    <tr class="price-summary-row">
+                        <td><div class="building-cell"><button class="toggle-btn" data-target="detail-5">▶</button>자양 주공아파트</div></td>
+                        <td>2억 / 150</td><td>1.5억 / 120</td><td>1.3억 / 100</td>
+                    </tr>
+                    <tr class="price-detail" id="detail-5"><td colspan="4"></td></tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        const toggleButtons = document.querySelectorAll('.toggle-btn');
+
+        toggleButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.target;
+                const row = document.getElementById(targetId);
+                if (!row) return;
+
+                const isOpen = row.classList.contains('open');
+                row.classList.toggle('open', !isOpen);
+                button.classList.toggle('open', !isOpen);
+                button.setAttribute('aria-label', isOpen ? '상세 펼치기' : '상세 접기');
+            });
+        });
+    </script>
+</body>
+
+</html>
