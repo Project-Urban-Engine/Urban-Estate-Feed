@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed D - Urban Engine</title>
+    <style>
+        /* ==========================================================================
+        Urban Engine – Font Size Scale Reference (px-based)
+        기준: Web(Desktop) px → 반응형 축소 매핑
+        --------------------------------------------------------------------------
+        Web px | Tablet px | Mobile px | Small Mobile px
+        --------------------------------------------------------------------------
+        44 | 38 | 32 | 26
+        38 | 34 | 28 | 24
+        28 | 26 | 24 | 20
+        24 | 22 | 18 | 16
+        22 | 20 | 16 | 14
+        20 | 18 | 14 | 13
+        18 | 16 | 14 | 13
+        16 | 16 | 15 | 14
+        15 | 15 | 14 | 13
+        14 | 14 | 13 | 13
+        13 | 13 | 13 | 13
+
+        Usage rule:
+        - Web px 값을 기준으로 선택
+        - Tablet / Mobile / Small Mobile은 위 매핑을 그대로 적용
+        - clamp(), media query, rem 변환의 기준 테이블로 사용
+        ========================================================================== */
+
+        /* Feed A, C 기준 토큰/브레이크포인트 재활용 */
+        @font-face {
+            font-family: 'esamanruLight';
+            src: url('Source/Fonts/esamanru Light.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'esamanruMedium';
+            src: url('Source/Fonts/esamanru Medium.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --violet: #6f41b0;
+            --lightviolet: #9b7ed6;
+            --gray: #808080;
+            --light-gray: #b3b3b3;
+            --black: #111111;
+            --white: #f9f9f9;
+            --orange: #f7931e;
+            --bg: #f6f7f9;
+
+            --blue: #5aa7ff;
+            --red: #f47676;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'esamanruLight', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--black);
+        }
+
+        .page {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 50px 50px 80px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 24px;
+            color: var(--black);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .tab-group {
+            display: flex;
+            gap: 15px;
+            margin: 120px 0 50px;
+        }
+
+        .tab {
+            flex: 1;
+            max-width: 150px;
+            padding: 8px 24px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-family: 'esamanruMedium', sans-serif;
+            background-color: var(--gray);
+            color: var(--white);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab:active {
+            transform: translateY(0);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #8B5CF6 0%, #6f41b0 100%);
+            box-shadow: 0 4px 12px rgba(111, 65, 176, 0.3);
+        }
+
+        .tab.active:hover {
+            box-shadow: 0 6px 16px rgba(111, 65, 176, 0.4);
+        }
+
+        .hero {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .hero small {
+            display: block;
+            color: var(--gray);
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            font-family: 'esamanruMedium', sans-serif;
+            color: var(--violet);
+            font-size: 44px;
+            line-height: 1.25;
+        }
+
+        .map-card {
+            position: relative;
+            border-radius: 0;
+            overflow: hidden;
+            margin-bottom: 200px;
+        }
+
+        .map-card img.bg {
+            width: 100%;
+            display: block;
+        }
+
+        .map-marker {
+            position: absolute;
+            top: 38%;
+            left: 58%;
+            width: 34px;
+            transform: translate(-50%, -50%);
+        }
+
+        .section-title {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 38px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+            color: var(--black);
+        }
+
+        /* section 내부의 tab-group은 작은 상단 여백 */
+        section .tab-group {
+            margin: 18px 0 0;
+        }
+
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 60px;
+            margin-bottom: 200px;
+        }
+
+        .pattern-card {
+            background: var(--white);
+            border-radius: 40px;
+            padding: 22px;
+            border: 1px solid rgba(17, 17, 17, 0.06);
+            text-align: center;
+            min-height: 210px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+        }
+
+        .pattern-card:active {
+            transform: translateY(-2px);
+        }
+
+        .pattern-card span {
+            font-size: 28px;
+            color: var(--gray);
+        }
+
+        .pattern-card strong {
+            font-size: 38px;
+            font-family: 'esamanruMedium', sans-serif;
+            color: var(--violet);
+        }
+
+        .pattern-card strong.orange {
+            color: var(--orange);
+        }
+
+        .contents-wrapper {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .insight-section {
+            margin-top: 50px;
+            margin-bottom: 150px;
+        }
+
+        .table-section {
+            margin-top: 70px;
+            margin-bottom: 50px;
+        }
+
+        .insight-block {
+            background: var(--white);
+            border-radius: 40px;
+            padding: 45px 40px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .insight-block:hover {
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .insight-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .insight-block h3 {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 28px;
+            margin-bottom: 24px;
+            color: var(--black);
+        }
+
+        .legend {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 6px;
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .legend::before {
+            content: '▲';
+            color: var(--violet);
+            font-size: 16px;
+            margin-right: 2px;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 30px;
+            align-items: start;
+            margin-bottom: 30px;
+        }
+
+        .bar-label {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 24px;
+            color: #555;
+            border-radius: 999px;
+            background: #e3e3e7;
+            text-align: center;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            padding: 0 14px;
+            word-break: keep-all;
+            white-space: nowrap;
+            margin-top: 13px;
+        }
+
+        .bar-label.active {
+            color: var(--violet);
+            background: #dbd3eb;
+            font-family: 'esamanruMedium', sans-serif;
+        }
+
+        .bar-wrap {
+            position: relative;
+            padding-top: 26px;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: 1px;
+            left: var(--pos, 50%);
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: #555;
+            font-family: 'esamanruMedium', sans-serif;
+            white-space: nowrap;
+        }
+
+        .bar-track {
+            height: 18px;
+            background: linear-gradient(90deg, #eee 0%, #8f64d0 100%);
+            border-radius: 99px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border: 2px solid #7f6a9b;
+            background: rgba(255, 255, 255, 0.2);
+            width: var(--fill, 60%);
+            margin-left: var(--offset, 20%);
+        }
+
+        .bar-pointer {
+            position: absolute;
+            bottom: -15px;
+            left: var(--pos, 50%);
+            transform: translateX(-50%);
+            color: var(--violet);
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .table-section {
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+
+        .table-wrapper {
+            background: var(--white);
+            border-radius: 40px;
+            padding: 45px 40px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .table-wrapper:hover {
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .table-title {
+            font-family: 'esamanruMedium', sans-serif;
+            font-size: 28px;
+            margin-bottom: 60px;
+            color: var(--black);
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 18px;
+        }
+
+        .price-table th,
+        .price-table td {
+            text-align: left;
+            padding: 10px 6px;
+        }
+
+        .price-table thead th {
+            font-family: 'esamanruMedium', sans-serif;
+            border-bottom: 1px solid #555;
+            font-size: 18px;
+            line-height: 2.5;
+        }
+
+        .price-table th.high {
+            color: var(--red);
+        }
+
+        .price-table th.avg {
+            color: var(--lightviolet);
+        }
+
+        .price-table th.low {
+            color: var(--blue);
+        }
+
+        .price-summary-row {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .building-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-btn {
+            border: none;
+            background: transparent;
+            color: var(--lightviolet);
+            font-size: 18px;
+            cursor: pointer;
+            line-height: 2.5;
+            transform: rotate(0deg);
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-btn:hover {
+            opacity: 0.7;
+        }
+
+        .toggle-btn.open {
+            transform: rotate(90deg);
+        }
+
+        .price-detail {
+            display: none;
+        }
+
+        .price-detail.open {
+            display: table-row;
+        }
+
+        .price-detail td {
+            padding: 0;
+            background: transparent;
+        }
+
+        .detail-wrap {
+            padding: 20px 20px 30px;
+            background: #efeff2;
+            border-radius: 20px;
+            margin: 0 6px 30px;
+        }
+
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        .detail-table th,
+        .detail-table td {
+            padding: 7px 6px;
+            text-align: left;
+        }
+
+        .detail-table thead th {
+            font-family: 'esamanruMedium', sans-serif;
+            border-bottom: 1px solid #666;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        /* 태블릿 */
+        @media (max-width: 960px) {
+            .page {
+                padding: 40px 30px 70px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .tab {
+                font-size: 15px;
+                min-width: 70px;
+                padding: 8px 16px;
+            }
+
+            .tab-group {
+                gap: 8px;
+                margin: 100px 0 40px;
+            }
+
+            section .tab-group {
+                margin: 16px 0 0;
+            }
+
+            .hero {
+                margin-top: 40px;
+                margin-bottom: 50px;
+            }
+
+            .hero small {
+                font-size: 22px;
+                margin-bottom: 10px;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .section-title {
+                font-size: 34px;
+            }
+
+            .pattern-grid {
+                gap: 16px;
+                margin-top: 16px;
+                margin-bottom: 60px;
+            }
+
+            .pattern-card {
+                border-radius: 34px;
+                padding: 20px;
+                min-height: 180px;
+                gap: 16px;
+            }
+
+            .pattern-card span {
+                font-size: 26px;
+            }
+
+            .pattern-card strong {
+                font-size: 34px;
+            }
+
+            .insight-section {
+                margin-top: 45px;
+                margin-bottom: 120px;
+            }
+
+            .table-section {
+                margin-top: 60px;
+                margin-bottom: 40px;
+            }
+
+            .insight-block {
+                border-radius: 34px;
+                padding: 38px 34px;
+                margin-bottom: 26px;
+            }
+
+            .table-wrapper {
+                border-radius: 34px;
+                padding: 38px 34px;
+            }
+
+            .insight-block h3 {
+                font-size: 26px;
+                margin-bottom: 20px;
+            }
+
+            .legend {
+                font-size: 16px;
+                margin-bottom: 18px;
+            }
+
+            .legend::before {
+                font-size: 16px;
+            }
+
+            .bar-row {
+                grid-template-columns: 120px 1fr;
+                gap: 14px;
+                margin-bottom: 14px;
+            }
+
+            .bar-label {
+                font-size: 22px;
+                min-height: 38px;
+                padding: 0 12px;
+                margin-top: 11px;
+            }
+
+            .bar-wrap {
+                padding-top: 22px;
+            }
+
+            .bar-value {
+                font-size: 16px;
+            }
+
+            .bar-track {
+                height: 11px;
+            }
+
+            .bar-fill {
+                border-width: 2px;
+            }
+
+            .bar-pointer {
+                font-size: 16px;
+                bottom: -16px;
+            }
+
+            .table-title {
+                font-size: 26px;
+            }
+
+            .price-table {
+                font-size: 16px;
+            }
+
+            .price-table thead th {
+                font-size: 16px;
+            }
+
+            .toggle-btn {
+                font-size: 16px;
+            }
+
+            .detail-wrap {
+                padding: 18px 18px 26px;
+                border-radius: 18px;
+                margin: 0 5px 14px;
+            }
+
+            .detail-table {
+                font-size: 16px;
+            }
+
+            .detail-table thead th {
+                font-size: 16px;
+            }
+        }
+
+        /* 모바일 */
+        @media (max-width: 768px) {
+            .page {
+                max-width: 420px;
+                padding: 24px 20px 60px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .tab {
+                font-size: 14px;
+                min-width: 62px;
+                padding: 7px 14px;
+            }
+
+            .tab-group {
+                gap: 5px;
+                margin: 80px 0 35px;
+            }
+
+            section .tab-group {
+                margin: 14px 0 0;
+            }
+
+            .hero {
+                margin-top: 35px;
+                margin-bottom: 45px;
+            }
+
+            .hero small {
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .map-card {
+                margin-bottom: 100px;
+            }
+
+            .section-title {
+                font-size: 28px;
+                margin-bottom: 14px;
+            }
+
+            .pattern-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+                margin-top: 14px;
+                margin-bottom: 80px;
+            }
+
+            .pattern-card {
+                border-radius: 28px;
+                padding: 20px;
+                min-height: 140px;
+                gap: 14px;
+            }
+
+            .pattern-card span {
+                font-size: 24px;
+            }
+
+            .pattern-card strong {
+                font-size: 28px;
+            }
+
+            .insight-section {
+                margin-top: 50px;
+                margin-bottom: 100px;
+            }
+
+            .table-section {
+                margin-top: 50px;
+                margin-bottom: 35px;
+            }
+
+            .insight-block {
+                border-radius: 28px;
+                padding: 28px 24px;
+                margin-bottom: 20px;
+            }
+
+            .table-wrapper {
+                border-radius: 28px;
+                padding: 28px 24px;
+            }
+
+            .insight-block h3 {
+                font-size: 24px;
+                margin-bottom: 18px;
+            }
+
+            .legend {
+                font-size: 15px;
+                margin-bottom: 16px;
+            }
+
+            .legend::before {
+                font-size: 15px;
+            }
+
+            .bar-row {
+                grid-template-columns: 100px 1fr;
+                gap: 12px;
+                margin-bottom: 14px;
+            }
+
+            .bar-label {
+                font-size: 18px;
+                min-height: 36px;
+                padding: 0 10px;
+                margin-top: 10px;
+            }
+
+            .bar-wrap {
+                padding-top: 20px;
+            }
+
+            .bar-value {
+                font-size: 14px;
+            }
+
+            .bar-track {
+                height: 9px;
+            }
+
+            .bar-fill {
+                border-width: 1px;
+            }
+
+            .bar-pointer {
+                font-size: 15px;
+                bottom: -14px;
+            }
+
+            .table-title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .price-table {
+                font-size: 14px;
+            }
+
+            .price-table thead th {
+                font-size: 14px;
+            }
+
+            .toggle-btn {
+                font-size: 14px;
+            }
+
+            .detail-wrap {
+                padding: 16px 16px 24px;
+                background: #efeff2;
+                border-radius: 16px;
+                margin: 0 4px 14px;
+            }
+
+            .detail-table {
+                font-size: 14px;
+            }
+
+            .detail-table th,
+            .detail-table td {
+                padding: 6px 4px;
+            }
+
+            .detail-table thead th {
+                font-size: 14px;
+            }
+        }
+
+        /* 작은 모바일 */
+        @media (max-width: 480px) {
+            .page {
+                padding: 20px 16px 50px;
+            }
+
+            .logo {
+                font-size: 16px;
+            }
+
+            .tab {
+                font-size: 13px;
+                min-width: 56px;
+                padding: 6px 12px;
+            }
+
+            .tab-group {
+                gap: 5px;
+                margin: 60px 0 30px;
+            }
+
+            section .tab-group {
+                margin: 12px 0 0;
+            }
+
+            .hero {
+                margin-top: 30px;
+                margin-bottom: 40px;
+            }
+
+            .hero small {
+                font-size: 16px;
+                margin-bottom: 6px;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .map-card {
+                margin-bottom: 80px;
+            }
+
+            .section-title {
+                font-size: 24px;
+                margin-bottom: 12px;
+            }
+
+            .pattern-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-top: 12px;
+                margin-bottom: 60px;
+            }
+
+            .pattern-card {
+                border-radius: 24px;
+                padding: 18px;
+                min-height: 120px;
+                gap: 12px;
+            }
+
+            .pattern-card span {
+                font-size: 20px;
+            }
+
+            .pattern-card strong {
+                font-size: 24px;
+            }
+
+            .insight-section {
+                margin-top: 40px;
+                margin-bottom: 80px;
+            }
+
+            .table-section {
+                margin-top: 45px;
+                margin-bottom: 30px;
+            }
+
+            .insight-block {
+                border-radius: 24px;
+                padding: 26px 22px;
+                margin-bottom: 18px;
+            }
+
+            .table-wrapper {
+                border-radius: 24px;
+                padding: 26px 22px;
+            }
+
+            .insight-block h3 {
+                font-size: 20px;
+                margin-bottom: 16px;
+            }
+
+            .legend {
+                font-size: 14px;
+                margin-bottom: 14px;
+            }
+
+            .legend::before {
+                font-size: 14px;
+            }
+
+            .bar-row {
+                grid-template-columns: 85px 1fr;
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+
+            .bar-label {
+                font-size: 16px;
+                min-height: 32px;
+                padding: 0 8px;
+                margin-top: 9px;
+            }
+
+            .bar-wrap {
+                padding-top: 18px;
+            }
+
+            .bar-value {
+                font-size: 13px;
+            }
+
+            .bar-track {
+                height: 8px;
+            }
+
+            .bar-fill {
+                border-width: 1px;
+            }
+
+            .bar-pointer {
+                font-size: 14px;
+                bottom: -13px;
+            }
+
+            .table-title {
+                font-size: 20px;
+                margin-bottom: 18px;
+            }
+
+            .price-table {
+                font-size: 13px;
+            }
+
+            .price-table th,
+            .price-table td {
+                padding: 8px 4px;
+            }
+
+            .price-table thead th {
+                font-size: 13px;
+            }
+
+            .toggle-btn {
+                font-size: 13px;
+            }
+
+            .detail-wrap {
+                padding: 14px 14px 20px;
+                background: #efeff2;
+                border-radius: 14px;
+                margin: 0 3px 12px;
+            }
+
+            .detail-table {
+                font-size: 13px;
+            }
+
+            .detail-table th,
+            .detail-table td {
+                padding: 5px 3px;
+            }
+
+            .detail-table thead th {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header>
+            <div class="logo">Urban Engine</div>
+        </header>
+
+        <div class="tab-group">
+            <button class="tab active">매매</button>
+            <button class="tab">전세</button>
+            <button class="tab">월세</button>
+        </div>
+
+        <section class="hero">
+            <small>서울시 광진구 자양동</small>
+            <h1>능동로13길 일대 - A구역</h1>
+        </section>
+
+        <section class="map-card">
+            <img class="bg" src="Data/L2.A/A_KeyMap/11215710_map.png" alt="구역 지도">
+            <img class="map-marker" src="Source/gps_marker.svg" alt="선택 위치">
+        </section>
+
+        <section>
+            <h2 class="section-title">이것만 알아도 충분!</h2>
+            <div class="tab-group">
+                <button class="tab active">다세대</button>
+                <button class="tab">오피스텔</button>
+                <button class="tab">아파트</button>
+            </div>
+
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <span>주택 수</span>
+                    <strong>32채</strong>
+                </div>
+                <div class="pattern-card">
+                    <span>세대 수 (추정)</span>
+                    <strong>850세대</strong>
+                </div>
+                <div class="pattern-card">
+                    <span>노후도</span>
+                    <strong class="orange">35.7년</strong>
+                </div>
+                <div class="pattern-card">
+                    <span>주차 대수</span>
+                    <strong>2.3대/세대</strong>
+                </div>
+                <div class="pattern-card">
+                    <span>부동산 가격</span>
+                    <strong class="orange">가파른 상승</strong>
+                </div>
+                <div class="pattern-card">
+                    <span>주요 거래 평형</span>
+                    <strong>M</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="insight-section">
+            <article class="insight-block">
+                <h3>공급 평형별 실거래가 분포</h3>
+                <div class="legend">거래가 중앙값</div>
+                <!-- 동적으로 생성됨 -->
+            </article>
+
+            <article class="insight-block">
+                <h3>노후도별 실거래가 분포</h3>
+                <div class="legend">거래가 중앙값</div>
+                <!-- 동적으로 생성됨 -->
+            </article>
+        </section>
+
+        <section class="table-section">
+            <div class="table-wrapper">
+                <h3 class="table-title">주요 매물 실거래가 (최근 2년)</h3>
+
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th style="width:38%;">건물명</th>
+                            <th class="high">상한가</th>
+                            <th class="avg">평균가</th>
+                            <th class="low">하한가</th>
+                        </tr>
+                    </thead>
+                    <tbody id="price-table-body">
+                        <!-- 동적으로 생성됨 -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // ========================================
+        // 데이터 설정
+        // ========================================
+        const CONFIG = {
+            targetCtyCd: '11215',
+            zoneId: '11215710_020_00',
+            trsType: '월세',
+            houseType: 'HM'
+        };
+
+        // 데이터 파일 경로
+        const DATA_PATHS = {
+            mainCard: 'Data/L2.D/D_11215_main_card.json',
+            mainCardHtype: 'Data/L2.D/D_11215_main_card_htype.json',
+            areaDist: 'Data/L2.D/D_11215_area_dist.json',
+            ageDist: 'Data/L2.D/D_11215_age_dist.json',
+            top5TransStat: 'Data/L2.D/D_11215_top5_transection_stat.json',
+            top5Trans: 'Data/L2.D/D_11215_top5_transection.json'
+        };
+
+        // 전역 데이터 저장소
+        let dataStore = {
+            mainCard: null,
+            mainCardHtype: null,
+            areaDist: null,
+            ageDist: null,
+            top5TransStat: null,
+            top5Trans: null
+        };
+
+        // 평형 정의
+        const AREA_GROUPS = {
+            "XS1": { min: null, max: 24, label: "~24㎡", desc: "원룸" },
+            "XS2": { min: 25, max: 40, label: "25~40㎡", desc: "초소형" },
+            "S": { min: 41, max: 59, label: "41~59㎡", desc: "소형" },
+            "M": { min: 60, max: 84, label: "60~84㎡", desc: "중형" },
+            "L": { min: 85, max: 102, label: "85~102㎡", desc: "중대형" },
+            "XL1": { min: 103, max: 135, label: "103~135㎡", desc: "대형" },
+            "XL2": { min: 136, max: null, label: "136㎡~", desc: "초대형" }
+        };
+
+        // 노후도 정의
+        const AGE_GROUPS = {
+            "<5": { min: null, max: 4, label: "5년 미만" },
+            "5-9": { min: 5, max: 9, label: "5~9년" },
+            "10-19": { min: 10, max: 19, label: "10~19년" },
+            "20-29": { min: 20, max: 29, label: "20~29년" },
+            "30+": { min: 30, max: null, label: "30년 이상" }
+        };
+
+        // 주택 유형 매핑
+        const HOUSE_TYPE_MAP = {
+            'HM': '다세대',
+            'HA': '아파트',
+            'HO': '오피스텔'
+        };
+
+        // ========================================
+        // 유틸리티 함수
+        // ========================================
+
+        // 가격 트렌드 변환
+        function getPriceTrend(pricePct) {
+            if (pricePct === null || pricePct === undefined) return '데이터 부족';
+            if (pricePct < -10) return '급격한 하락';
+            if (pricePct < -3) return '하락';
+            if (pricePct <= 3) return '유지';
+            if (pricePct <= 10) return '상승';
+            return '가파른 상승';
+        }
+
+        // 가격 포맷팅 (만원 단위)
+        function formatPrice(price, isSale = false) {
+            if (price === null || price === undefined) return '-';
+            if (isSale) {
+                // 매매가 (억원 단위)
+                const eok = Math.floor(price / 10000);
+                const man = price % 10000;
+                if (man === 0) return `${eok}억`;
+                return `${eok}억 ${man}`;
+            } else {
+                // 전월세 (만원 단위)
+                return price.toLocaleString();
+            }
+        }
+
+        // 가격 출력 (전월세 복합)
+        function formatRentPrice(depoPrice, rentPrice) {
+            if (depoPrice === null || depoPrice === undefined) return '-';
+            const depo = formatPrice(depoPrice / 10000, true);
+            if (rentPrice === null || rentPrice === undefined || rentPrice === 0) {
+                return depo;  // 전세
+            }
+            return `${depo} / ${rentPrice}`;  // 월세
+        }
+
+        // 날짜 포맷팅 (YYYYMM -> YYYY년 M월)
+        function formatContYm(ym) {
+            if (!ym) return '-';
+            const year = ym.toString().substring(0, 4);
+            const month = parseInt(ym.toString().substring(4, 6));
+            return `${year}년 ${month}월`;
+        }
+
+        // 데이터 없음 메시지
+        function getNoDataMessage(trsType, houseType) {
+            return `해당 구역에 ${trsType}, ${HOUSE_TYPE_MAP[houseType]} 거래 없음`;
+        }
+
+        // ========================================
+        // 데이터 로드
+        // ========================================
+        async function loadAllData() {
+            try {
+                const results = await Promise.all([
+                    fetch(DATA_PATHS.mainCard).then(r => r.json()),
+                    fetch(DATA_PATHS.mainCardHtype).then(r => r.json()),
+                    fetch(DATA_PATHS.areaDist).then(r => r.json()),
+                    fetch(DATA_PATHS.ageDist).then(r => r.json()),
+                    fetch(DATA_PATHS.top5TransStat).then(r => r.json()),
+                    fetch(DATA_PATHS.top5Trans).then(r => r.json())
+                ]);
+
+                dataStore.mainCard = results[0];
+                dataStore.mainCardHtype = results[1];
+                dataStore.areaDist = results[2];
+                dataStore.ageDist = results[3];
+                dataStore.top5TransStat = results[4];
+                dataStore.top5Trans = results[5];
+
+                console.log('모든 데이터 로드 완료');
+                return true;
+            } catch (error) {
+                console.error('데이터 로드 실패:', error);
+                return false;
+            }
+        }
+
+        // ========================================
+        // UI 업데이트 함수들
+        // ========================================
+
+        // "이것만 알아도 충분!" 파트 업데이트
+        function updateMainCardSection() {
+            const zoneData = dataStore.mainCard?.[CONFIG.zoneId];
+            const htypeData = dataStore.mainCardHtype?.[CONFIG.zoneId]?.[CONFIG.trsType]?.[CONFIG.houseType];
+
+            if (!zoneData || !htypeData) {
+                console.error('Main card 데이터 없음');
+                return;
+            }
+
+            // 주택 수
+            const totalCnt = zoneData[`D01_${CONFIG.houseType}_total_cnt`];
+            document.querySelector('.pattern-card:nth-child(1) strong').textContent =
+                totalCnt !== null ? `${totalCnt}채` : '-';
+
+            // 세대 수
+            const houseSum = zoneData[`D01_${CONFIG.houseType}_house_sum`];
+            document.querySelector('.pattern-card:nth-child(2) strong').textContent =
+                houseSum !== null ? `${houseSum}세대` : '-';
+
+            // 노후도
+            const buildAge = zoneData[`D02_${CONFIG.houseType}_build_age_avg`];
+            document.querySelector('.pattern-card:nth-child(3) strong').textContent =
+                buildAge !== null ? `${buildAge.toFixed(1)}년` : '-';
+
+            // 주차 대수
+            const parkingAvg = zoneData[`D01_${CONFIG.houseType}_parking_avg`];
+            document.querySelector('.pattern-card:nth-child(4) strong').textContent =
+                parkingAvg !== null ? `${parkingAvg.toFixed(1)}대/세대` : '-';
+
+            // 부동산 가격 트렌드
+            const pricePctKey = CONFIG.trsType === '매매' ? 'sale_price_pct'
+                : CONFIG.trsType === '전세' ? 'depo_price_pct'
+                    : 'rent_price_pct';
+            const pricePct = htypeData[pricePctKey];
+            document.querySelector('.pattern-card:nth-child(5) strong').textContent = getPriceTrend(pricePct);
+
+            // 주요 거래 평형
+            const areaGrp = htypeData.area_grp;
+            const areaLabel = areaGrp && AREA_GROUPS[areaGrp] ? AREA_GROUPS[areaGrp].desc : '-';
+            document.querySelector('.pattern-card:nth-child(6) strong').textContent = areaLabel;
+        }
+
+        // 공급 평형별 실거래가 분포 업데이트
+        function updateAreaDistSection() {
+            const areaDistData = dataStore.areaDist?.[CONFIG.zoneId]?.[CONFIG.trsType]?.[CONFIG.houseType];
+
+            if (!areaDistData) {
+                console.error('Area dist 데이터 없음');
+                return;
+            }
+
+            const priceKey = CONFIG.trsType === '매매' ? 'sale_price'
+                : CONFIG.trsType === '전세' ? 'depo_price'
+                    : 'rent_price';
+
+            // 기존 bar 제거
+            const container = document.querySelector('.insight-block:nth-of-type(1)');
+            const barsContainer = container.querySelector('.bar-rows') || createBarsContainer(container);
+
+            // 데이터가 있는 평형 그룹만 필터링
+            const areaGroups = Object.keys(areaDistData).filter(key => {
+                const data = areaDistData[key];
+                return data.cnt_trade !== null && data.cnt_trade > 0;
+            });
+
+            if (areaGroups.length === 0) {
+                barsContainer.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--gray);">${getNoDataMessage(CONFIG.trsType, CONFIG.houseType)}</div>`;
+                return;
+            }
+
+            // 각 평형별 bar 생성
+            barsContainer.innerHTML = '';
+            areaGroups.forEach(areaGrp => {
+                const data = areaDistData[areaGrp];
+                const areaInfo = AREA_GROUPS[areaGrp];
+                if (!areaInfo) return;
+
+                const barRow = createDistributionBar(
+                    areaInfo.label,
+                    data,
+                    priceKey,
+                    CONFIG.trsType === '매매'
+                );
+                barsContainer.appendChild(barRow);
+            });
+        }
+
+        // 노후도별 실거래가 분포 업데이트
+        function updateAgeDistSection() {
+            const ageDistData = dataStore.ageDist?.[CONFIG.zoneId]?.[CONFIG.trsType]?.[CONFIG.houseType];
+
+            if (!ageDistData) {
+                console.error('Age dist 데이터 없음');
+                return;
+            }
+
+            const priceKey = CONFIG.trsType === '매매' ? 'sale_price'
+                : CONFIG.trsType === '전세' ? 'depo_price'
+                    : 'rent_price';
+
+            // 기존 bar 제거
+            const container = document.querySelector('.insight-block:nth-of-type(2)');
+            const barsContainer = container.querySelector('.bar-rows') || createBarsContainer(container);
+
+            // 데이터가 있는 노후도 그룹만 필터링
+            const ageGroups = Object.keys(ageDistData).filter(key => {
+                const data = ageDistData[key];
+                return data.cnt_trade !== null && data.cnt_trade > 0;
+            });
+
+            if (ageGroups.length === 0) {
+                barsContainer.innerHTML = `<div style="text-align: center; padding: 40px; color: var(--gray);">${getNoDataMessage(CONFIG.trsType, CONFIG.houseType)}</div>`;
+                return;
+            }
+
+            // 각 노후도별 bar 생성
+            barsContainer.innerHTML = '';
+            ageGroups.forEach(ageGrp => {
+                const data = ageDistData[ageGrp];
+                const ageInfo = AGE_GROUPS[ageGrp];
+                if (!ageInfo) return;
+
+                const barRow = createDistributionBar(
+                    ageInfo.label,
+                    data,
+                    priceKey,
+                    CONFIG.trsType === '매매'
+                );
+                barsContainer.appendChild(barRow);
+            });
+        }
+
+        // Bar 컨테이너 생성
+        function createBarsContainer(parentContainer) {
+            const barsDiv = document.createElement('div');
+            barsDiv.className = 'bar-rows';
+            // legend 다음에 삽입
+            const legend = parentContainer.querySelector('.legend');
+            if (legend && legend.nextSibling) {
+                parentContainer.insertBefore(barsDiv, legend.nextSibling);
+            } else {
+                parentContainer.appendChild(barsDiv);
+            }
+            return barsDiv;
+        }
+
+        // 분포 Bar 생성 (공통)
+        function createDistributionBar(label, data, priceKey, isSale) {
+            const barRow = document.createElement('div');
+            barRow.className = 'bar-row';
+
+            // 레이블
+            const barLabel = document.createElement('div');
+            barLabel.className = 'bar-label';
+            barLabel.textContent = label;
+
+            // Bar wrap
+            const barWrap = document.createElement('div');
+            barWrap.className = 'bar-wrap';
+
+            const avg = data[`${priceKey}_avg`];
+            const min = data[`${priceKey}_min`];
+            const max = data[`${priceKey}_max`];
+            const q25 = data[`${priceKey}_q25`];
+            const q75 = data[`${priceKey}_q75`];
+            const dataType = data.data_type;
+
+            // 가격 표시
+            const barValue = document.createElement('div');
+            barValue.className = 'bar-value';
+            if (isSale) {
+                barValue.textContent = avg !== null ? formatPrice(avg, true) : '-';
+            } else {
+                // 전월세는 보증금/월세 형태로 표시
+                const depoAvg = data[`depo_price_avg`];
+                const rentAvg = data[`rent_price_avg`];
+                barValue.textContent = formatRentPrice(depoAvg, rentAvg);
+            }
+
+            // Bar track
+            const barTrack = document.createElement('div');
+            barTrack.className = 'bar-track';
+
+            // data_type에 따른 처리
+            if (dataType === 0 || avg === null) {
+                // 데이터 없음
+                barWrap.style.setProperty('--pos', '50%');
+                barValue.style.color = 'var(--gray)';
+            } else if (dataType === 1) {
+                // 거래 2건 이하 - 중앙에 점만 표시
+                const pos = 50; // 중앙
+                barWrap.style.setProperty('--pos', `${pos}%`);
+            } else {
+                // 정상 데이터 (data_type 2, 3)
+                // min-max 범위에서 avg의 위치 계산
+                let pos = 50;
+                if (max !== min && max !== null && min !== null) {
+                    pos = ((avg - min) / (max - min)) * 100;
+                }
+                barWrap.style.setProperty('--pos', `${Math.max(0, Math.min(100, pos))}%`);
+
+                // Q25-Q75 강조 박스
+                if (q25 !== null && q75 !== null && max !== min) {
+                    const barFill = document.createElement('div');
+                    barFill.className = 'bar-fill';
+                    const fillStart = ((q25 - min) / (max - min)) * 100;
+                    const fillWidth = ((q75 - q25) / (max - min)) * 100;
+                    barFill.style.setProperty('--fill', `${Math.max(0, Math.min(100, fillWidth))}%`);
+                    barFill.style.setProperty('--offset', `${Math.max(0, Math.min(100, fillStart))}%`);
+                    barTrack.appendChild(barFill);
+                }
+            }
+
+            // 포인터
+            const barPointer = document.createElement('div');
+            barPointer.className = 'bar-pointer';
+            barPointer.textContent = '▲';
+
+            barWrap.appendChild(barValue);
+            barWrap.appendChild(barTrack);
+            barWrap.appendChild(barPointer);
+
+            barRow.appendChild(barLabel);
+            barRow.appendChild(barWrap);
+
+            return barRow;
+        }
+
+        // 주요 매물 실거래가 테이블 업데이트
+        function updateTop5TransactionTable() {
+            const statData = dataStore.top5TransStat?.[CONFIG.zoneId]?.[CONFIG.trsType]?.[CONFIG.houseType];
+            const detailData = dataStore.top5Trans?.[CONFIG.zoneId]?.[CONFIG.trsType]?.[CONFIG.houseType];
+
+            const tbody = document.getElementById('price-table-body');
+            if (!tbody) {
+                console.error('Table tbody not found');
+                return;
+            }
+
+            tbody.innerHTML = '';
+
+            // 데이터 없음 체크
+            if (!statData || !detailData) {
+                const noDataRow = document.createElement('tr');
+                noDataRow.innerHTML = `<td colspan="4" style="text-align: center; padding: 40px; color: var(--gray);">${getNoDataMessage(CONFIG.trsType, CONFIG.houseType)}</td>`;
+                tbody.appendChild(noDataRow);
+                return;
+            }
+
+            // statData가 배열인지 객체인지 확인
+            const items = Array.isArray(statData) ? statData : [statData];
+            const detailItems = Array.isArray(detailData) ? detailData : [detailData];
+
+            items.forEach((item, index) => {
+                const detailItem = detailItems[index];
+
+                // Summary row
+                const summaryRow = document.createElement('tr');
+                summaryRow.className = 'price-summary-row';
+
+                const buildingCell = document.createElement('td');
+                const cellDiv = document.createElement('div');
+                cellDiv.className = 'building-cell';
+
+                const toggleBtn = document.createElement('button');
+                toggleBtn.className = 'toggle-btn';
+                toggleBtn.setAttribute('aria-label', '상세 펼치기');
+                toggleBtn.setAttribute('data-target', `detail-${index}`);
+                toggleBtn.textContent = '▶';
+
+                cellDiv.appendChild(toggleBtn);
+                cellDiv.appendChild(document.createTextNode(`${item.road_adrs} ${item.build_nm}`));
+                buildingCell.appendChild(cellDiv);
+
+                // 가격 정보
+                const pricePrefix = CONFIG.trsType === '매매' ? 'sale'
+                    : CONFIG.trsType === '전세' ? 'depo'
+                        : CONFIG.trsType === '월세' ? 'rent' : 'rent';
+
+                const highTd = document.createElement('td');
+                const avgTd = document.createElement('td');
+                const lowTd = document.createElement('td');
+
+                if (CONFIG.trsType === '매매') {
+                    highTd.textContent = formatPrice(item[`price_${pricePrefix}_h`], true);
+                    avgTd.textContent = formatPrice(item[`price_${pricePrefix}_m`], true);
+                    lowTd.textContent = formatPrice(item[`price_${pricePrefix}_l`], true);
+                } else if (CONFIG.trsType === '전세') {
+                    highTd.textContent = formatPrice(item[`price_depo_h`], true);
+                    avgTd.textContent = formatPrice(item[`price_depo_m`], true);
+                    lowTd.textContent = formatPrice(item[`price_depo_l`], true);
+                } else {
+                    // 월세
+                    highTd.textContent = formatRentPrice(item.price_depo_h, item.price_rent_h);
+                    avgTd.textContent = formatRentPrice(item.price_depo_m, item.price_rent_m);
+                    lowTd.textContent = formatRentPrice(item.price_depo_l, item.price_rent_l);
+                }
+
+                summaryRow.appendChild(buildingCell);
+                summaryRow.appendChild(highTd);
+                summaryRow.appendChild(avgTd);
+                summaryRow.appendChild(lowTd);
+                tbody.appendChild(summaryRow);
+
+                // Detail row
+                const detailRow = document.createElement('tr');
+                detailRow.className = 'price-detail';
+                detailRow.id = `detail-${index}`;
+
+                const detailTd = document.createElement('td');
+                detailTd.setAttribute('colspan', '4');
+
+                if (detailItem) {
+                    const detailWrap = document.createElement('div');
+                    detailWrap.className = 'detail-wrap';
+
+                    const detailTable = document.createElement('table');
+                    detailTable.className = 'detail-table';
+
+                    // Detail table header
+                    const thead = document.createElement('thead');
+                    thead.innerHTML = `
+                        <tr>
+                            <th>거래일자</th>
+                            <th>층수</th>
+                            <th>면적</th>
+                            <th>준공연도</th>
+                            <th>가격</th>
+                        </tr>
+                    `;
+                    detailTable.appendChild(thead);
+
+                    // Detail table body
+                    const detailTbody = document.createElement('tbody');
+
+                    // detailItem이 배열인지 확인 (여러 거래가 있을 수 있음)
+                    const transactions = Array.isArray(detailItem) ? detailItem : [detailItem];
+
+                    transactions.forEach(trans => {
+                        const tr = document.createElement('tr');
+
+                        let priceText = '-';
+                        if (CONFIG.trsType === '매매') {
+                            priceText = formatPrice(trans.price_sale, true);
+                        } else if (CONFIG.trsType === '전세') {
+                            priceText = formatPrice(trans.price_depo, true);
+                        } else {
+                            priceText = formatRentPrice(trans.price_depo, trans.price_rent);
+                        }
+
+                        tr.innerHTML = `
+                            <td>${formatContYm(trans.cont_ym)}</td>
+                            <td>${trans.floor || '-'}층</td>
+                            <td>${trans.area_excl ? trans.area_excl.toFixed(1) : '-'}㎡</td>
+                            <td>${trans.build_year || '-'}년</td>
+                            <td>${priceText}</td>
+                        `;
+                        detailTbody.appendChild(tr);
+                    });
+
+                    detailTable.appendChild(detailTbody);
+                    detailWrap.appendChild(detailTable);
+                    detailTd.appendChild(detailWrap);
+                }
+
+                detailRow.appendChild(detailTd);
+                tbody.appendChild(detailRow);
+            });
+
+            // 토글 버튼 이벤트 재설정
+            setupToggleButtons();
+        }
+
+        // 토글 버튼 이벤트 설정
+        function setupToggleButtons() {
+            const toggleButtons = document.querySelectorAll('.toggle-btn');
+            toggleButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    const row = document.getElementById(targetId);
+                    if (!row) return;
+
+                    const isOpen = row.classList.contains('open');
+                    row.classList.toggle('open', !isOpen);
+                    button.classList.toggle('open', !isOpen);
+                    button.setAttribute('aria-label', isOpen ? '상세 펼치기' : '상세 접기');
+                });
+            });
+        }
+
+        // ========================================
+        // 초기화
+        // ========================================
+        async function initialize() {
+            const success = await loadAllData();
+            if (success) {
+                updateMainCardSection();
+                updateAreaDistSection();
+                updateAgeDistSection();
+                updateTop5TransactionTable();
+            }
+        }
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+
+</html>
