@@ -1126,12 +1126,12 @@
 
         // 데이터 파일 경로
         const DATA_PATHS = {
-            mainCard: 'Data/L2.D/D_11215_main_card.json',
-            mainCardHtype: 'Data/L2.D/D_11215_main_card_htype.json',
-            areaDist: 'Data/L2.D/D_11215_area_dist.json',
-            ageDist: 'Data/L2.D/D_11215_age_dist.json',
-            top5TransStat: 'Data/L2.D/D_11215_top5_transection_stat.json',
-            top5Trans: 'Data/L2.D/D_11215_top5_transection.json'
+            mainCard: 'Data/L2.D/L2.D.11215/D_11215_main_card.json',
+            mainCardHtype: 'Data/L2.D/L2.D.11215/D_11215_main_card_htype.json',
+            areaDist: 'Data/L2.D/L2.D.11215/D_11215_area_dist.json',
+            ageDist: 'Data/L2.D/L2.D.11215/D_11215_age_dist.json',
+            top5TransStat: 'Data/L2.D/L2.D.11215/D_11215_top5_transection_stat.json',
+            top5Trans: 'Data/L2.D/L2.D.11215/D_11215_top5_transection.json'
         };
 
         // 전역 데이터 저장소
@@ -1431,7 +1431,7 @@
             const barWrap = document.createElement('div');
             barWrap.className = 'bar-wrap';
 
-            const avg = data[`${priceKey}_avg`];
+            const avg = data[`${priceKey}_mid`];
             const min = data[`${priceKey}_min`];
             const max = data[`${priceKey}_max`];
             const q25 = data[`${priceKey}_q25`];
@@ -1445,8 +1445,8 @@
                 barValue.textContent = avg !== null ? formatPrice(avg, true) : '-';
             } else {
                 // 전월세는 보증금/월세 형태로 표시
-                const depoAvg = data[`depo_price_avg`];
-                const rentAvg = data[`rent_price_avg`];
+                const depoAvg = data[`depo_price_mid`];
+                const rentAvg = data[`rent_price_mid`];
                 barValue.textContent = formatRentPrice(depoAvg, rentAvg);
             }
 
